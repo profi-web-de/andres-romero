@@ -1,0 +1,127 @@
+/* Docencia: tipografia editorial, no fichas.
+   La version anterior pintaba cada catedra como una tarjeta con sombra,
+   gradiente y botones en pildora. Al lado de Biografia, Violinista y Director
+   --que son prosa sobre fondo limpio-- parecia otra web. Aqui solo hay
+   jerarquia tipografica y filetes: los datos siguen viniendo de campos
+   estructurados del CMS, pero se leen como un articulo. */
+
+.teaching-page .post-subtitle {
+  margin: 0.75rem 0 0;
+  max-width: 60rem;
+}
+
+/* Cada bloque (catedra, clases magistrales, recursos) se separa con un filete,
+   que es todo el peso visual que necesita. El primero no lleva filete: ya lo
+   separa la prosa introductoria. */
+.teaching-block {
+  margin-top: 3.25rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.teaching-block:first-child {
+  margin-top: 2.5rem;
+}
+
+/* Antetitulo: dice de que institucion se trata sin robarle el titular al
+   nombre propio de la escuela. */
+.teaching-eyebrow {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.post-content .teaching-block > h2 {
+  margin-top: 0;
+  margin-bottom: 0.2rem;
+}
+
+.teaching-kicker {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-body);
+  color: var(--secondary);
+}
+
+.post-content .teaching-block > h3 {
+  margin-top: 2em;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+}
+
+/* Entradas repetibles (una clase magistral, un recurso): sangradas con un
+   filete a la izquierda en lugar de encerradas en una caja. */
+.teaching-entry {
+  margin: 1.75rem 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.post-content .teaching-entry > h3 {
+  margin-top: 0;
+  margin-bottom: 0.3rem;
+  font-size: 1.1rem;
+}
+
+.teaching-entry > p:last-child {
+  margin-bottom: 0;
+}
+
+.teaching-meta {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--secondary);
+}
+
+/* Los enlaces institucionales eran botones en pildora, con mas peso que el
+   propio contenido. Como enlace de texto con flecha pesan lo justo. */
+.teaching-more {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.teaching-more a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding-bottom: 1px;
+}
+
+.teaching-more a::after {
+  content: " \2197";
+  font-weight: 400;
+}
+
+.teaching-more a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.teaching-note {
+  margin-top: 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--secondary);
+}
+
+.teaching-muted {
+  color: var(--secondary);
+}
+
+@media (max-width: 640px) {
+  .teaching-block {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+  }
+}
+
+/* Los bloques de calendario y recursos abren con un parrafo descriptivo justo
+   debajo del titular; sin este respiro quedaba pegado al h2. */
+.post-content .teaching-block > h2 + p {
+  margin-top: 0.7rem;
+}

@@ -1,0 +1,82 @@
+/* Feed de Instagram.
+
+   Reutiliza la rejilla, la tarjeta y el lightbox de la galeria de imagenes
+   (images.css + images-gallery.js): aqui solo van las diferencias propias de
+   un feed, que son el recorte cuadrado, la fecha y la leyenda. */
+
+.instagram-feed .instagram-card .gallery-lightbox-trigger {
+  position: relative;
+}
+
+/* Instagram mezcla vertical, cuadrado y apaisado. Sin un recorte comun la
+   rejilla queda dentada; el cuadrado es el formato que la propia red usa para
+   su cuadricula de perfil. */
+.instagram-feed .instagram-card img {
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+.instagram-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.instagram-card__date {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.instagram-card__caption {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--primary);
+}
+
+.instagram-card__link {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.instagram-card__link a,
+.instagram-follow a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding-bottom: 1px;
+}
+
+.instagram-card__link a::after,
+.instagram-follow a::after {
+  content: " \2197";
+  font-weight: 400;
+}
+
+.instagram-card__link a:hover,
+.instagram-follow a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.instagram-follow {
+  margin-top: 2.5rem;
+  font-family: var(--font-body);
+}

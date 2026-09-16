@@ -1,0 +1,562 @@
+backend:
+  name: github
+  repo: profi-web-de/andres-romero # The repo
+  branch: main
+  # Relay OAuth propio (Cloudflare Worker del repo profi-web-de/cms-auth).
+  # Sin esta línea, Sveltia cae por defecto en api.netlify.com/auth, el relay
+  # compartido de Netlify: ajeno, y capaz de desaparecer sin aviso.
+  base_url: https://cms-auth.profi-web.workers.dev
+
+# Media files configuration
+media_folder: "assets/images"
+public_folder: "/images"
+
+# i18n configuration
+i18n:
+  structure: multiple_files
+  locales: [de, es, en]
+  default_locale: de
+  omit_default_locale_from_filename : true
+
+collections:
+  - name: "site_settings"
+    label: "Site Settings"
+    files:
+      - label: "General Settings"
+        name: "general_contact_settings"
+        file: "data/site_settings.yml"
+        fields:
+          - {
+              label: "Booking Destination Email",
+              name: "booking_email",
+              widget: "string",
+              hint: "Messages from Contact/Booking form will be sent to this email",
+            }
+          - label: "Social Links"
+            name: "social_links"
+            widget: "object"
+            fields:
+              - {
+                  label: "Facebook URL",
+                  name: "facebook",
+                  widget: "string",
+                  required: false,
+                  hint: "Full URL to the Facebook profile or page",
+                }
+              - {
+                  label: "Instagram URL",
+                  name: "instagram",
+                  widget: "string",
+                  required: false,
+                  hint: "Full URL to the Instagram profile",
+                }
+              - {
+                  label: "YouTube URL",
+                  name: "youtube",
+                  widget: "string",
+                  required: false,
+                  hint: "Full URL to the YouTube channel or profile",
+                }
+  - name: "homepage"
+    label: "Homepage"
+    i18n: true
+    files:
+      - label: "Hero"
+        name: "homepage"
+        file: "content/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - {
+              label: "Internal Title",
+              name: "title",
+              widget: "string",
+              i18n: true,
+              required: false,
+              hint: "Internal page title. It is not displayed in the hero.",
+            }
+          - {
+              label: "Hide Footer",
+              name: "hideFooter",
+              widget: "hidden",
+              default: true,
+              i18n: duplicate,
+            }
+          - label: "Hero"
+            name: "home_hero"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Eyebrow", name: "eyebrow", widget: "string", i18n: true, required: false }
+              - { label: "Title", name: "title", widget: "string", i18n: true }
+              - {
+                  label: "Subtitle",
+                  name: "subtitle",
+                  widget: "text",
+                  i18n: true,
+                  required: false,
+                  hint: "Max 500 characters.",
+                  pattern: ["^[\\s\\S]{0,500}$", "Must be 500 characters or fewer."],
+                }
+              - {
+                  label: "Autoplay Seconds",
+                  name: "autoplay_seconds",
+                  widget: "number",
+                  value_type: "int",
+                  min: 3,
+                  max: 5,
+                  step: 1,
+                  default: 4,
+                  i18n: duplicate,
+                }
+              - label: "Slides"
+                name: "slides"
+                widget: "list"
+                i18n: true
+                min: 3
+                fields:
+                  - {
+                      label: "Image",
+                      name: "image",
+                      widget: "image",
+                      i18n: duplicate,
+                      hint: "Recommended: 1600x2400 px (2:3). Minimum: 1200x1800 px. Vertical portraits work best. Keep the subject centered or slightly to the right, with some safe margin for cover cropping on smaller screens.",
+                    }
+                  - { label: "Alt Text", name: "alt", widget: "string", i18n: true, required: false }
+              - label: "Profile Briefs"
+                name: "profiles"
+                widget: "list"
+                i18n: true
+                min: 3
+                max: 3
+                fields:
+                  - { label: "Title", name: "title", widget: "string", i18n: true }
+                  - { label: "Brief", name: "brief", widget: "text", i18n: true }
+                  - {
+                      label: "Link (optional)",
+                      name: "link",
+                      widget: "string",
+                      i18n: duplicate,
+                      required: false,
+                      hint: "Section this card opens, without the language prefix: violin/, conducting/, teaching/. Leave empty and the card is plain text.",
+                    }
+      - label: "Featured Video"
+        name: "home_video"
+        file: "content/home/video.{{locale}}.md"
+        i18n: true
+        fields:
+          - label: "Featured Video"
+            name: "home_featured_video"
+            widget: "object"
+            i18n: true
+            required: false
+            fields:
+              - {
+                  label: "Section Title",
+                  name: "title",
+                  widget: "string",
+                  i18n: true,
+                  required: false,
+                  hint: "Optional heading shown above the embedded video.",
+                }
+              - {
+                  label: "Description",
+                  name: "description",
+                  widget: "text",
+                  i18n: true,
+                  required: false,
+                  hint: "Short description displayed next to the video.",
+                }
+              - {
+                  label: "YouTube Video ID",
+                  name: "youtube_id",
+                  widget: "string",
+                  i18n: duplicate,
+                  required: false,
+                  hint: "Example: MGreSb1NjtA",
+                }
+      - label: "Press Quotes"
+        name: "home_press"
+        file: "content/home/press.{{locale}}.md"
+        i18n: true
+        fields:
+          - label: "Press Quotes"
+            name: "home_press"
+            widget: "object"
+            i18n: true
+            required: false
+            fields:
+              - {
+                  label: "Section Title",
+                  name: "title",
+                  widget: "string",
+                  i18n: true,
+                  required: false,
+                  hint: "Heading shown above the quotes, e.g. 'Press'.",
+                }
+              - label: "Quotes"
+                name: "quotes"
+                widget: "list"
+                i18n: true
+                required: false
+                summary: "{{fields.source}}"
+                hint: "Short excerpts from reviews. Leave empty to hide the whole section."
+                fields:
+                  - { label: "Quote", name: "quote", widget: "text", i18n: true }
+                  - { label: "Source", name: "source", widget: "string", i18n: true, hint: "Publication and date, e.g. 'Lübeckische Blätter, 2022'." }
+                  - { label: "Link (optional)", name: "url", widget: "string", i18n: duplicate, required: false }
+      - label: "Closing Call to Action"
+        name: "home_cta"
+        file: "content/home/cta.{{locale}}.md"
+        i18n: true
+        fields:
+          - label: "Closing Call to Action"
+            name: "home_cta"
+            widget: "object"
+            i18n: true
+            required: false
+            fields:
+              - {
+                  label: "Title",
+                  name: "title",
+                  widget: "string",
+                  i18n: true,
+                  required: false,
+                  hint: "Leave empty to hide the closing block.",
+                }
+              - { label: "Text", name: "text", widget: "text", i18n: true, required: false }
+              - { label: "Button Label", name: "button_label", widget: "string", i18n: true, required: false, hint: "The button always links to the contact page." }
+  - name: "pages"
+    label: "Pages (Biography, etc.)"
+    i18n: true
+    files:
+      - label: "Biography"
+        name: "about"
+        file: "content/about.{{locale}}.md" 
+        i18n: true
+        fields:
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - {
+              label: "Hide translation list",
+              name: "hideTranslationList",
+              widget: "hidden",
+              default: true,
+              i18n: duplicate,
+            }
+          - label: "Portrait (optional)"
+            name: "portrait"
+            widget: "object"
+            required: false
+            i18n: true
+            fields:
+              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Shown at the top of the biography. Landscape or square works best here." }
+              - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
+          - {
+              label: "Friendly URL (slug)",
+              name: "slug",
+              widget: "string",
+              i18n: true,
+            }
+          - { label: "Content", name: "body", widget: "markdown", i18n: true }
+      - label: "Violinist"
+        name: "violin"
+        file: "content/violin.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - {
+              label: "Hide translation list",
+              name: "hideTranslationList",
+              widget: "hidden",
+              default: true,
+              i18n: duplicate,
+            }
+          - label: "Portrait (optional)"
+            name: "portrait"
+            widget: "object"
+            required: false
+            i18n: true
+            fields:
+              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Se muestra arriba de la página. Funciona mejor una foto apaisada." }
+              - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
+          - { label: "Content", name: "body", widget: "markdown", i18n: true }
+      - label: "Conductor"
+        name: "conducting"
+        file: "content/conducting.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - {
+              label: "Hide translation list",
+              name: "hideTranslationList",
+              widget: "hidden",
+              default: true,
+              i18n: duplicate,
+            }
+          - label: "Portrait (optional)"
+            name: "portrait"
+            widget: "object"
+            required: false
+            i18n: true
+            fields:
+              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Se muestra arriba de la página. Funciona mejor una foto apaisada." }
+              - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
+          - { label: "Content", name: "body", widget: "markdown", i18n: true }
+      - label: "Teaching"
+        name: "teaching"
+        file: "content/teaching/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
+          - label: "Portrait (optional)"
+            name: "portrait"
+            widget: "object"
+            required: false
+            i18n: true
+            fields:
+              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Se muestra arriba de la página. Funciona mejor una foto apaisada." }
+              - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
+          - { label: "Intro Content", name: "body", widget: "markdown", i18n: true, required: false }
+          - label: "Chair in Germany"
+            name: "germany_chair"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "University Name", name: "university_name", widget: "string", i18n: true }
+              - { label: "University URL", name: "university_url", widget: "string", required: false, i18n: duplicate }
+              - { label: "Appointment Title", name: "appointment_title", widget: "string", i18n: true }
+              - { label: "Description", name: "description", widget: "text", i18n: true }
+              - label: "Admissions Items"
+                name: "admissions"
+                widget: "list"
+                i18n: true
+                field: { label: "Admissions Item", name: "item", widget: "string", i18n: true }
+              - label: "Audition Items"
+                name: "auditions"
+                widget: "list"
+                i18n: true
+                field: { label: "Audition Item", name: "item", widget: "string", i18n: true }
+          - label: "Chair in Peru"
+            name: "peru_chair"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Institution Name", name: "institution_name", widget: "string", i18n: true }
+              - { label: "Institution URL", name: "institution_url", widget: "string", required: false, i18n: duplicate }
+              - { label: "Appointment Title", name: "appointment_title", widget: "string", i18n: true }
+              - { label: "Description", name: "description", widget: "text", i18n: true }
+              - label: "Initiatives"
+                name: "initiatives"
+                widget: "list"
+                i18n: true
+                field: { label: "Initiative", name: "item", widget: "string", i18n: true }
+          - label: "Masterclasses"
+            name: "masterclasses"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Description", name: "description", widget: "text", i18n: true, required: false }
+              - label: "Events"
+                name: "events"
+                widget: "list"
+                i18n: true
+                required: false
+                fields:
+                  - { label: "Title", name: "title", widget: "string", i18n: true }
+                  - { label: "Date Label", name: "date", widget: "string", i18n: true, required: false }
+                  - { label: "Location", name: "location", widget: "string", i18n: true, required: false }
+                  - { label: "Details", name: "details", widget: "text", i18n: true, required: false }
+                  - { label: "Link", name: "link", widget: "string", i18n: duplicate, required: false }
+          - label: "Student Resources"
+            name: "resources"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Enabled", name: "enabled", widget: "boolean", default: true, i18n: duplicate }
+              - { label: "Private Area", name: "private_area", widget: "boolean", default: true, i18n: duplicate }
+              - { label: "Description", name: "description", widget: "text", i18n: true, required: false }
+              - { label: "Access Note", name: "access_note", widget: "string", i18n: true, required: false }
+              - label: "Resource Items"
+                name: "items"
+                widget: "list"
+                i18n: true
+                required: false
+                fields:
+                  - { label: "Title", name: "title", widget: "string", i18n: true }
+                  - { label: "Description", name: "description", widget: "text", i18n: true, required: false }
+                  - { label: "Link", name: "link", widget: "string", i18n: duplicate, required: false }
+  - name: "multimedia_resources"
+    label: "Multimedia / Resources"
+    i18n: true
+    files:
+      - label: "Images Gallery"
+        name: "images_gallery"
+        file: "content/images/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Show Page in Submenu", name: "show_page", widget: "boolean", default: true, i18n: duplicate }
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
+          - { label: "Intro Content", name: "body", widget: "markdown", i18n: true, required: false }
+          - label: "Gallery Images"
+            name: "gallery_items"
+            widget: "list"
+            i18n: true
+            summary: "{{fields.title}}"
+            required: false
+            hint: "Reorder the list to control the gallery sequence. Disable an image to hide it without deleting it."
+            fields:
+              - { label: "Show in Gallery", name: "enabled", widget: "boolean", default: true, i18n: duplicate }
+              - {
+                  label: "Image",
+                  name: "image",
+                  widget: "image",
+                  i18n: duplicate,
+                  hint: "Recommended: 1600 px or larger on the long side.",
+                }
+              - { label: "Title", name: "title", widget: "string", i18n: true }
+              - { label: "Description", name: "description", widget: "text", i18n: true, required: false }
+              - { label: "Alt Text", name: "alt", widget: "string", i18n: true, required: false }
+      - label: "Instagram Feed"
+        name: "instagram_feed"
+        file: "content/instagram/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Show Page in Submenu", name: "show_page", widget: "boolean", default: false, i18n: duplicate }
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
+          - { label: "Intro Content", name: "body", widget: "markdown", i18n: true, required: false }
+          - { label: "Instagram Profile URL", name: "profile_url", widget: "string", required: false, i18n: duplicate }
+          - { label: "Instagram Handle (without @)", name: "profile_handle", widget: "string", required: false, i18n: duplicate }
+          - {
+              label: "Posts to Show",
+              name: "max_items",
+              widget: "number",
+              default: 9,
+              value_type: "int",
+              min: 1,
+              max: 12,
+              i18n: duplicate,
+            }
+          - { label: "Show Captions", name: "show_captions", widget: "boolean", default: true, i18n: duplicate }
+          - {
+              label: "Caption Language",
+              name: "caption_language",
+              widget: "select",
+              options: ["de", "es", "en"],
+              default: "es",
+              i18n: duplicate,
+              hint: "The language the captions are written in. Instagram gives one caption per post, shown as-is in all three site languages.",
+            }
+          - label: "Per-post Exceptions"
+            name: "overrides"
+            widget: "list"
+            required: false
+            i18n: duplicate
+            summary: "{{fields.post_id}}"
+            hint: "The posts themselves are synced automatically and must not be edited by hand: the next sync overwrites them. Use this list to hide one post or fix its alt text."
+            fields:
+              - { label: "Post ID", name: "post_id", widget: "string", i18n: duplicate }
+              - { label: "Hide this post", name: "hidden", widget: "boolean", default: false, i18n: duplicate }
+              - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
+      - label: "Videos Gallery"
+        name: "videos_gallery"
+        file: "content/videos/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Show Page in Submenu", name: "show_page", widget: "boolean", default: true, i18n: duplicate }
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
+          - { label: "Intro Content", name: "body", widget: "markdown", i18n: true, required: false }
+          - label: "Gallery Videos"
+            name: "gallery_videos"
+            widget: "list"
+            i18n: true
+            summary: "{{fields.title}}"
+            required: false
+            hint: "Reorder the list to control the gallery sequence. Each video opens on a separate detail page. Disable a video to hide it without deleting it."
+            fields:
+              - { label: "Show in Gallery", name: "enabled", widget: "boolean", default: true, i18n: duplicate }
+              - { label: "Title", name: "title", widget: "string", i18n: true }
+              - { label: "Publication Date", name: "date", widget: "datetime", i18n: duplicate }
+              - { label: "YouTube Video ID (e.g., dQw4w9WgXcQ)", name: "youtube_id", widget: "string", i18n: duplicate }
+              - label: "Cover Image (optional)"
+                name: "cover"
+                widget: "object"
+                required: false
+                i18n: duplicate
+                fields:
+                  - {
+                      label: "Image",
+                      name: "image",
+                      widget: "image",
+                      required: false,
+                      i18n: duplicate,
+                    }
+              - { label: "Description or Concert Notes", name: "body", widget: "markdown", i18n: true, required: false }
+      - label: "Audios Gallery"
+        name: "audios_gallery"
+        file: "content/audios/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Show Page in Submenu", name: "show_page", widget: "boolean", default: true, i18n: duplicate }
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
+          - { label: "Intro Content", name: "body", widget: "markdown", i18n: true, required: false }
+          - label: "Gallery Audios"
+            name: "gallery_audios"
+            widget: "list"
+            i18n: true
+            summary: "{{fields.title}}"
+            required: false
+            hint: "Reorder the list to control the audio sequence. Disable an audio entry to hide it without deleting it."
+            fields:
+              - { label: "Show in Library", name: "enabled", widget: "boolean", default: true, i18n: duplicate }
+              - { label: "Title", name: "title", widget: "string", i18n: true }
+              - { label: "Publication Date", name: "date", widget: "datetime", i18n: duplicate, required: false }
+              - { label: "YouTube Video ID (optional)", name: "youtube_id", widget: "string", i18n: duplicate, required: false }
+              - { label: "Audio URL (optional)", name: "audio_url", widget: "string", i18n: duplicate, required: false }
+              - { label: "Description or Recording Notes", name: "body", widget: "markdown", i18n: true, required: false }
+  - name: "concerts_list"
+    label: "Concert Schedule - List Page"
+    i18n: true
+    files:
+      - label: "Concert Schedule Settings"
+        name: "concerts_list"
+        file: "content/concerts/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - {
+              label: "Show Concert Schedule",
+              name: "show_page",
+              widget: "boolean",
+              default: false,
+              i18n: duplicate,
+              hint: "Off by default. Turn it on only when there are confirmed concerts: the schedule then appears in the menu, in the footer and on the homepage. Turning it off hides it everywhere without deleting any event.",
+            }
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
+          - { label: "Content", name: "body", widget: "markdown", i18n: true, required: false }
+  - name: "concerts"
+    label: "Concert Schedule / Events"
+    folder: "content/concerts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    i18n: true
+    fields:
+      - { label: "Title", name: "title", widget: "string", i18n: true }
+      - { label: "Concert Date & Time", name: "date", widget: "datetime", i18n: duplicate }
+      - { label: "City", name: "city", widget: "string", i18n: duplicate }
+      - { label: "Concert Hall / Venue", name: "venue", widget: "string", i18n: duplicate }
+      - { label: "Repertoire", name: "repertoire", widget: "string", i18n: true }
+      - { label: "Flyer Image (optional)", name: "flyer", widget: "image", required: false, i18n: duplicate }
+      - { label: "Ticket Link (optional)", name: "ticket_link", widget: "string", required: false, i18n: duplicate, hint: "URL to purchase tickets (e.g., https://example.com/tickets)" }
+      - label: "Contact Information (optional)"
+        name: "contact"
+        widget: "object"
+        required: false
+        i18n: duplicate
+        fields:
+          - { label: "Email", name: "email", widget: "string", required: false, i18n: duplicate }
+          - { label: "Phone", name: "phone", widget: "string", required: false, i18n: duplicate }
+      - { label: "Additional Notes", name: "body", widget: "markdown", i18n: true, required: false }

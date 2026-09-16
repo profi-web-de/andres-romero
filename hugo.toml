@@ -1,0 +1,208 @@
+baseURL = 'https://profi-web-de.github.io/andres-romero/'
+theme = 'PaperMod'
+# Multilingüe: alemán por defecto (sirve en la raíz), español e inglés en subcarpeta.
+# Esta clave DEBE ir antes de cualquier [tabla]: dentro de una, TOML la trata como
+# clave de esa tabla y Hugo la ignora, cayendo silenciosamente a 'en'.
+defaultContentLanguage = 'de'
+buildFuture = true
+
+# Las secciones de la portada (content/home/*) son fragmentos de contenido, no
+# páginas: existen para que el CMS pueda editarlas por separado, y el layout de
+# la home las lee con site.GetPage. El cascade vive aquí y no en el front matter
+# para que el CMS no pueda borrarlo al guardar.
+[[cascade]]
+  [cascade.build]
+    render = 'never'
+    list = 'never'
+  [cascade.target]
+    path = '{/home,/home/**}'
+
+# Google Analytics 4 — pendiente: hace falta crear una propiedad nueva para este
+# sitio. Sin 'id' no se carga GA4 ni aparece el banner de consentimiento, que es
+# justo lo que queremos hasta tenerlo.
+# [services]
+#   [services.googleAnalytics]
+#     id = 'G-XXXXXXXXXX'
+
+[languages]
+  [languages.de]
+    languageCode = 'de-DE'
+    languageName = 'Deutsch'
+    weight = 1
+    title = 'Andrés Romero'
+    [languages.de.params]
+      description = 'Gitarrist, Komponist und Musikpädagoge in Erfurt'
+
+  [languages.es]
+    languageCode = 'es-ES'
+    languageName = 'Español'
+    weight = 2
+    title = 'Andrés Romero'
+    [languages.es.params]
+      description = 'Guitarrista, compositor y pedagogo musical en Erfurt'
+
+  [languages.en]
+    languageCode = 'en-GB'
+    languageName = 'English'
+    weight = 3
+    title = 'Andrés Romero'
+    [languages.en.params]
+      description = 'Guitarist, composer and music teacher based in Erfurt'
+
+[params]
+  # Fijado en claro: la identidad del sitio es el fondo, no una preferencia del
+  # visitante. Si al final se elige la dirección oscura, esto pasa a 'dark'.
+  defaultTheme = 'light'
+  ShowShareButtons = false
+  ShowReadingTime = false
+  images = ['og-default.jpg']
+  [params.assets]
+    favicon = 'favicon.svg'
+    # Placeholder: lo fija la dirección visual que elija Andrés (fase 3).
+    theme_color = '#111111'
+    msapplication_TileColor = '#111111'
+  copyright_name = 'Andrés Romero'
+  [params.profileMode]
+    enabled = true
+  [params.developer]
+    name = 'Pablo Johnson'
+    url = 'https://github.com/pablo-johnson'
+
+# --- MENUS ---
+[languages.de.menu]
+  [[languages.de.menu.main]]
+    name = "Biografie"
+    url = "about/"
+    weight = 1
+  [[languages.de.menu.main]]
+    name = "Projekte"
+    url = "projects/"
+    weight = 2
+  [[languages.de.menu.main]]
+    name = "Konzerte"
+    url = "concerts/"
+    weight = 3
+  [[languages.de.menu.main]]
+    name = "Unterricht"
+    url = "teaching/"
+    weight = 4
+  [[languages.de.menu.main]]
+    identifier = "multimedia"
+    name = "Medien"
+    weight = 5
+  [[languages.de.menu.main]]
+    name = "Bilder"
+    url = "images/"
+    parent = "multimedia"
+    weight = 1
+  [[languages.de.menu.main]]
+    name = "Videos"
+    url = "videos/"
+    parent = "multimedia"
+    weight = 2
+  [[languages.de.menu.main]]
+    name = "Audios"
+    url = "audios/"
+    parent = "multimedia"
+    weight = 3
+  [[languages.de.menu.main]]
+    name = "Instagram"
+    url = "instagram/"
+    parent = "multimedia"
+    weight = 4
+  [[languages.de.menu.main]]
+    name = "Kontakt"
+    url = "contact/"
+    weight = 6
+
+[languages.es.menu]
+  [[languages.es.menu.main]]
+    name = "Biografía"
+    url = "about/"
+    weight = 1
+  [[languages.es.menu.main]]
+    name = "Proyectos"
+    url = "projects/"
+    weight = 2
+  [[languages.es.menu.main]]
+    name = "Conciertos"
+    url = "concerts/"
+    weight = 3
+  [[languages.es.menu.main]]
+    name = "Clases"
+    url = "teaching/"
+    weight = 4
+  [[languages.es.menu.main]]
+    identifier = "multimedia"
+    name = "Medios"
+    weight = 5
+  [[languages.es.menu.main]]
+    name = "Imágenes"
+    url = "images/"
+    parent = "multimedia"
+    weight = 1
+  [[languages.es.menu.main]]
+    name = "Videos"
+    url = "videos/"
+    parent = "multimedia"
+    weight = 2
+  [[languages.es.menu.main]]
+    name = "Audios"
+    url = "audios/"
+    parent = "multimedia"
+    weight = 3
+  [[languages.es.menu.main]]
+    name = "Instagram"
+    url = "instagram/"
+    parent = "multimedia"
+    weight = 4
+  [[languages.es.menu.main]]
+    name = "Contacto"
+    url = "contact/"
+    weight = 6
+
+[languages.en.menu]
+  [[languages.en.menu.main]]
+    name = "Biography"
+    url = "about/"
+    weight = 1
+  [[languages.en.menu.main]]
+    name = "Projects"
+    url = "projects/"
+    weight = 2
+  [[languages.en.menu.main]]
+    name = "Concerts"
+    url = "concerts/"
+    weight = 3
+  [[languages.en.menu.main]]
+    name = "Lessons"
+    url = "teaching/"
+    weight = 4
+  [[languages.en.menu.main]]
+    identifier = "multimedia"
+    name = "Media"
+    weight = 5
+  [[languages.en.menu.main]]
+    name = "Images"
+    url = "images/"
+    parent = "multimedia"
+    weight = 1
+  [[languages.en.menu.main]]
+    name = "Videos"
+    url = "videos/"
+    parent = "multimedia"
+    weight = 2
+  [[languages.en.menu.main]]
+    name = "Audio"
+    url = "audios/"
+    parent = "multimedia"
+    weight = 3
+  [[languages.en.menu.main]]
+    name = "Instagram"
+    url = "instagram/"
+    parent = "multimedia"
+    weight = 4
+  [[languages.en.menu.main]]
+    name = "Contact"
+    url = "contact/"
+    weight = 6

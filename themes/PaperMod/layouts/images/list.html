@@ -1,0 +1,89 @@
+{{ define "main" }}
+{{- $styles := resources.Get "css/images.css" -}}
+{{- if $styles -}}
+{{- $styles = $styles | minify -}}
+<style>{{ $styles.Content | safeCSS }}</style>
+{{- end -}}
+{{- $galleryScript := resources.Get "js/images-gallery.js" -}}
+{{- if .Params.show_page | default true }}
+
+{{- if not .IsHome | and .Title }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- if .Params.subtitle }}
+  <p class="post-subtitle">{{ .Params.subtitle }}</p>
+  {{- end }}
+  {{- if .Description }}
+  <div class="post-description">{{ .Description | markdownify }}</div>
+  {{- end }}
+</header>
+{{- end }}
+
+{{- if .Content }}
+<div class="post-content">
+  {{- if not (.Param "disableAnchoredHeadings") }}
+  {{- partial "anchored_headings.html" .Content -}}
+  {{- else }}{{ .Content }}{{ end }}
+</div>
+{{- end }}
+
+{{- $gallery := where (.Params.gallery_items | default (slice)) "enabled" "!=" false -}}
+{{- $pageTitle := .Title -}}
+{{- $prevLabel := i18n "gallery_prev_image" -}}
+{{- $nextLabel := i18n "gallery_next_image" -}}
+
+{{- if gt (len $gallery) 0 }}
+<section class="image-gallery" data-image-gallery>
+  {{- range $index, $item := $gallery }}
+  {{- $src := $item.image -}}
+  {{- $lightboxSrc := partial "image-url.html" (dict "src" $src "width" 1800) -}}
+  {{- $title := $item.title | default (printf "%s %d" $pageTitle (add $index 1)) -}}
+  {{- $description := $item.description | default "" -}}
+  {{- $alt := $item.alt | default $title -}}
+  <figure class="gallery-card">
+    <button class="gallery-lightbox-trigger" type="button" data-lightbox-index="{{ $index }}" data-lightbox-src="{{ $lightboxSrc }}" data-lightbox-alt="{{ $alt }}" data-lightbox-title="{{ $title }}" data-lightbox-description="{{ $description }}">
+      {{ partial "responsive-image.html" (dict
+          "src" $src
+          "alt" $alt
+          "sizes" "(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+          "widths" (slice 400 600 900 1200)) }}
+    </button>
+    <figcaption>
+      <strong>{{ $title }}</strong>
+      {{- with $description }}
+      <p>{{ . }}</p>
+      {{- end }}
+    </figcaption>
+  </figure>
+  {{- end }}
+</section>
+<dialog class="image-lightbox" id="image-lightbox" aria-label="{{ i18n "gallery_lightbox_label" }}">
+  <div class="image-lightbox-frame">
+    <button class="image-lightbox-nav image-lightbox-nav--prev" type="button" aria-label="{{ $prevLabel }}">&#10094;</button>
+    <div class="image-lightbox-content">
+      <img id="image-lightbox-preview" src="" alt="">
+      <div class="image-lightbox-meta">
+        <h2 id="image-lightbox-title"></h2>
+        <p id="image-lightbox-caption"></p>
+      </div>
+    </div>
+    <button class="image-lightbox-nav image-lightbox-nav--next" type="button" aria-label="{{ $nextLabel }}">&#10095;</button>
+  </div>
+</dialog>
+{{- with $galleryScript }}
+{{- $script := . | minify -}}
+{{- if not site.Params.assets.disableFingerprinting }}
+{{- $script = $script | fingerprint }}
+<script defer crossorigin="anonymous" src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
+{{- else }}
+<script defer src="{{ $script.RelPermalink }}"></script>
+{{- end }}
+{{- end }}
+{{- else }}
+<section class="media-empty-state">
+  <p>{{ i18n "gallery_empty" }}</p>
+</section>
+{{- end }}
+{{- end }}
+{{ end }}

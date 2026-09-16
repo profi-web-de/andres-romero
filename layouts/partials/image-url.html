@@ -1,0 +1,30 @@
+{{- /*
+  Devuelve la URL de una imagen procesada por Hugo.
+
+  Resuelve la ruta guardada por el CMS (p. ej. "/images/foo.jpg") contra
+  assets/ y devuelve una versión redimensionada en WebP. Si la imagen es
+  remota, no existe en assets/ o no es procesable (SVG, GIF), devuelve la
+  URL original sin tocar.
+
+  Uso: {{ partial "image-url.html" (dict "src" $src "width" 1600) }}
+
+  Parámetros:
+    src     ruta o URL de la imagen (obligatorio)
+    width   ancho objetivo en px (por defecto 1600)
+    quality calidad WebP (por defecto 82)
+*/ -}}
+{{- $src := .src | default "" -}}
+{{- $width := .width | default 1600 -}}
+{{- $quality := .quality | default 82 -}}
+{{- $out := $src -}}
+{{- $remote := or (hasPrefix $src "http://") (hasPrefix $src "https://") (hasPrefix $src "//") (hasPrefix $src "data:") -}}
+{{- if and $src (not $remote) -}}
+  {{- with resources.Get (strings.TrimPrefix "/" $src) -}}
+    {{- $out = .RelPermalink -}}
+    {{- if in (slice "image/jpeg" "image/png" "image/webp" "image/tiff" "image/bmp") .MediaType.Type -}}
+      {{- $target := cond (lt .Width $width) .Width $width -}}
+      {{- $out = (.Resize (printf "%dx webp q%d" $target $quality)).RelPermalink -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

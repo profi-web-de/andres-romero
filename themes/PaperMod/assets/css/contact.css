@@ -1,0 +1,159 @@
+.contact-booking-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.contact-booking-intro {
+  margin-bottom: 1rem;
+  color: var(--content);
+}
+
+.contact-booking-form {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 10px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+}
+
+.contact-booking-form label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--title);
+}
+
+.contact-booking-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-booking-form input,
+.contact-booking-form textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--theme);
+  color: var(--content);
+  font: inherit;
+}
+
+.contact-booking-form textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.contact-booking-form input:focus,
+.contact-booking-form textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.contact-booking-submit {
+  justify-self: start;
+  padding: 0.75rem 1.35rem;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: var(--primary-light-text, #fff);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.contact-booking-submit:hover {
+  opacity: 0.9;
+}
+
+.contact-booking-submit:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+[data-theme="dark"] .contact-booking-submit {
+  background: var(--code-bg);
+  color: var(--content);
+  border-color: var(--primary);
+}
+
+[data-theme="dark"] .contact-booking-submit:hover {
+  background: var(--primary);
+  color: var(--theme);
+  opacity: 1;
+}
+
+.contact-booking-status {
+  min-height: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease, padding 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  pointer-events: none;
+}
+
+.contact-booking-status.is-visible {
+  padding: 0.9rem 1rem;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.contact-booking-status.is-pending {
+  color: var(--title);
+  border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+  background: color-mix(in srgb, var(--primary) 10%, var(--theme));
+}
+
+.contact-booking-status.is-success {
+  color: #1f7a3d;
+  border-color: color-mix(in srgb, #1f7a3d 28%, transparent);
+  background: color-mix(in srgb, #1f7a3d 10%, var(--theme));
+}
+
+.contact-booking-status.is-error {
+  color: #c0392b;
+  border-color: color-mix(in srgb, #c0392b 28%, transparent);
+  background: color-mix(in srgb, #c0392b 10%, var(--theme));
+}
+
+[data-theme="dark"] .contact-booking-status.is-pending {
+  color: #d7e8ff;
+  border-color: color-mix(in srgb, #6ba8ff 38%, transparent);
+  background: color-mix(in srgb, #6ba8ff 14%, var(--theme));
+}
+
+[data-theme="dark"] .contact-booking-status.is-success {
+  color: #77d38a;
+  border-color: color-mix(in srgb, #77d38a 38%, transparent);
+  background: color-mix(in srgb, #77d38a 12%, var(--theme));
+}
+
+[data-theme="dark"] .contact-booking-status.is-error {
+  color: #ff8d80;
+  border-color: color-mix(in srgb, #ff8d80 38%, transparent);
+  background: color-mix(in srgb, #ff8d80 12%, var(--theme));
+}
+
+.contact-booking-warning {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid #c0392b;
+  background: color-mix(in srgb, #c0392b 11%, var(--theme));
+  border-radius: 6px;
+}
+
+@media (max-width: 640px) {
+  .contact-booking-form {
+    padding: 1rem;
+  }
+}

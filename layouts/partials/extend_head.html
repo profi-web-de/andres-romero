@@ -1,0 +1,43 @@
+{{- /*
+  Tipografía del sitio, autoalojada.
+
+  Las fuentes viven en assets/fonts y se sirven desde el propio dominio: cargar
+  Google Fonts desde los servidores de Google transmite la IP del visitante a un
+  tercero, justo lo que el banner de consentimiento intenta evitar (y lo que los
+  tribunales alemanes han considerado problemático). Los archivos son los mismos
+  woff2 oficiales, obtenidos del paquete @fontsource.
+
+  Las URL las resuelve Hugo, así que funcionan también bajo el subdirectorio de
+  GitHub Pages y llevan fingerprint para poder cachearlas a largo plazo.
+
+  Los subconjuntos latin-ext solo se descargan si la página usa algún glifo de
+  ese rango (unicode-range), así que no penalizan la carga habitual.
+*/ -}}
+{{- $latin := "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD" -}}
+{{- $latinExt := "U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF" -}}
+{{- $faces := slice
+    (dict "file" "fonts/inter-latin-400-normal.woff2"                "family" "Inter"            "weight" "400" "style" "normal" "range" $latin    "preload" true)
+    (dict "file" "fonts/inter-latin-ext-400-normal.woff2"            "family" "Inter"            "weight" "400" "style" "normal" "range" $latinExt "preload" false)
+    (dict "file" "fonts/inter-latin-600-normal.woff2"                "family" "Inter"            "weight" "600" "style" "normal" "range" $latin    "preload" false)
+    (dict "file" "fonts/inter-latin-ext-600-normal.woff2"            "family" "Inter"            "weight" "600" "style" "normal" "range" $latinExt "preload" false)
+    (dict "file" "fonts/playfair-display-latin-600-normal.woff2"     "family" "Playfair Display" "weight" "600" "style" "normal" "range" $latin    "preload" true)
+    (dict "file" "fonts/playfair-display-latin-ext-600-normal.woff2" "family" "Playfair Display" "weight" "600" "style" "normal" "range" $latinExt "preload" false)
+    (dict "file" "fonts/playfair-display-latin-400-italic.woff2"     "family" "Playfair Display" "weight" "400" "style" "italic" "range" $latin    "preload" false)
+    (dict "file" "fonts/playfair-display-latin-ext-400-italic.woff2" "family" "Playfair Display" "weight" "400" "style" "italic" "range" $latinExt "preload" false)
+-}}
+{{- range $face := $faces }}
+{{- if $face.preload }}
+{{- with resources.Get $face.file }}
+{{- $f := . | fingerprint }}
+<link rel="preload" href="{{ $f.RelPermalink }}" as="font" type="font/woff2" crossorigin>
+{{- end }}
+{{- end }}
+{{- end }}
+<style>
+{{- range $face := $faces }}
+{{- with resources.Get $face.file }}
+{{- $f := . | fingerprint }}
+@font-face{font-family:'{{ $face.family }}';font-style:{{ $face.style }};font-weight:{{ $face.weight }};font-display:swap;src:url({{ $f.RelPermalink }}) format('woff2');unicode-range:{{ $face.range }};}
+{{- end }}
+{{- end }}
+</style>

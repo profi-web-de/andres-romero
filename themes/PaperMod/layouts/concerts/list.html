@@ -1,0 +1,262 @@
+{{- define "main" }}
+{{- if partial "section-visible.html" . }}
+
+{{- if (and site.Params.profileMode.enabled .IsHome) }}
+{{- partial "index_profile.html" . }}
+{{- else }} {{/* if not profileMode */}}
+
+{{- if not .IsHome | and .Title }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>
+    {{ .Title }}
+    {{- if and (or (eq .Kind `term`) (eq .Kind `section`)) (.Param "ShowRssButtonInSectionTermList") }}
+    {{- with .OutputFormats.Get "rss" }}
+    <a href="{{ .RelPermalink }}" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+    {{- end }}
+    {{- end }}
+  </h1>
+  {{- if .Params.subtitle }}
+  <p class="post-subtitle">
+    {{ .Params.subtitle }}
+  </p>
+  {{- end }}
+  {{- if .Description }}
+  <div class="post-description">
+    {{ .Description | markdownify }}
+  </div>
+  {{- end }}
+</header>
+{{- end }}
+
+{{- if .Content }}
+<div class="post-content">
+  {{- if not (.Param "disableAnchoredHeadings") }}
+  {{- partial "anchored_headings.html" .Content -}}
+  {{- else }}{{ .Content }}{{ end }}
+</div>
+{{- end }}
+
+{{- if .IsSection }}
+{{- $styles := resources.Get "css/concerts.css" }}
+{{ if $styles }}
+{{ $styles = $styles | minify }}
+<style>{{ $styles.Content | safeCSS }}</style>
+{{ end }}
+<style>
+  .concert-item {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border-left: 4px solid var(--primary);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .concert-item-header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .concert-flyer-thumbnail {
+    width: 100px;
+    height: auto;
+    min-width: 100px;
+    border-radius: 5px;
+    object-fit: cover;
+  }
+
+  .concert-item-content {
+    flex: 1;
+  }
+
+  .concert-date {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .concert-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .concert-details dt {
+    font-weight: 600;
+    color: var(--title);
+  }
+
+  .concert-details dd {
+    margin: 0;
+    color: var(--content);
+  }
+
+  .concert-actions {
+    margin-top: 0.5rem;
+  }
+
+  .concert-actions a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    margin-right: 0.5rem;
+  }
+
+  .concert-actions a:hover {
+    opacity: 0.85;
+  }
+
+  [data-theme="dark"] .concert-actions a {
+    color: var(--content);
+    background-color: var(--code-bg);
+    border: 1px solid var(--primary);
+  }
+
+  [data-theme="dark"] .concert-actions a:hover {
+    opacity: 1;
+    background-color: var(--primary);
+    color: white;
+  }
+
+  .concert-section-title {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .concert-section-title:first-of-type {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .concert-item-header {
+      flex-direction: column;
+    }
+
+    .concert-flyer-thumbnail {
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+</style>
+
+{{- $now := now }}
+{{- $concertPages := where .Site.RegularPages "Section" "concerts" }}
+{{- $futureEvents := where $concertPages "Date" ">=" $now }}
+{{- $pastEvents := where $concertPages "Date" "<" $now }}
+
+{{- if $futureEvents }}
+<div class="concert-section-title">{{ i18n "upcoming_events" }}</div>
+{{- range $futureEvents.ByDate }}
+<div class="concert-item">
+  <div class="concert-item-header">
+    {{- if .Params.flyer }}
+    {{ partial "responsive-image.html" (dict
+        "src" .Params.flyer
+        "alt" .Title
+        "class" "concert-flyer-thumbnail"
+        "sizes" "(max-width: 700px) 100vw, 200px"
+        "widths" (slice 200 300 400 600)) }}
+    {{- end }}
+    <div class="concert-item-content">
+      <div class="concert-date">{{ .Date.Format "02.01.2006 15:04" }} {{ with .Params.city }}– {{ . }}{{ end }}</div>
+      <dl class="concert-details">
+        {{- with .Params.city }}
+        <dt>{{ i18n "city" }}:</dt>
+        <dd>{{ . }}</dd>
+        {{- end }}
+        {{- with .Params.venue }}
+        <dt>{{ i18n "venue" }}:</dt>
+        <dd>{{ . }}</dd>
+        {{- end }}
+        {{- with .Params.repertoire }}
+        <dt>{{ i18n "repertoire" }}:</dt>
+        <dd>{{ . }}</dd>
+        {{- end }}
+      </dl>
+      {{- if or .Params.ticket_link .RelPermalink }}
+      <div class="concert-actions">
+        {{- with .Params.ticket_link }}
+        <a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ i18n "buy_tickets" }}</a>
+        {{- end }}
+        <a href="{{ .RelPermalink }}">{{ i18n "more_info" }}</a>
+      </div>
+      {{- end }}
+      {{- if .PlainWords }}
+      <p>{{ .Summary }}</p>
+      {{- end }}
+    </div>
+  </div>
+</div>
+{{- end }}
+{{- end }}
+
+{{- if $pastEvents }}
+<div class="concert-section-title">{{ i18n "past_events" }}</div>
+{{- range $pastEvents.Reverse.ByDate }}
+<div class="concert-item">
+  <div class="concert-item-header">
+    {{- if .Params.flyer }}
+    {{ partial "responsive-image.html" (dict
+        "src" .Params.flyer
+        "alt" .Title
+        "class" "concert-flyer-thumbnail"
+        "sizes" "(max-width: 700px) 100vw, 200px"
+        "widths" (slice 200 300 400 600)) }}
+    {{- end }}
+    <div class="concert-item-content">
+      <div class="concert-date">{{ .Date.Format "02.01.2006 15:04" }} {{ with .Params.city }}– {{ . }}{{ end }}</div>
+      <dl class="concert-details">
+        {{- with .Params.city }}
+        <dt>{{ i18n "city" }}:</dt>
+        <dd>{{ . }}</dd>
+        {{- end }}
+        {{- with .Params.venue }}
+        <dt>{{ i18n "venue" }}:</dt>
+        <dd>{{ . }}</dd>
+        {{- end }}
+        {{- with .Params.repertoire }}
+        <dt>{{ i18n "repertoire" }}:</dt>
+        <dd>{{ . }}</dd>
+        {{- end }}
+      </dl>
+      {{- if .RelPermalink }}
+      <div class="concert-actions">
+        <a href="{{ .RelPermalink }}">{{ i18n "more_info" }}</a>
+      </div>
+      {{- end }}
+      {{- if .PlainWords }}
+      <p>{{ .Summary }}</p>
+      {{- end }}
+    </div>
+  </div>
+</div>
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}
+
+{{- end }}{{/* section-visible */}}
+
+{{- end }}

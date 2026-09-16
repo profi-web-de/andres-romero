@@ -1,0 +1,98 @@
+{{- define "main" }}
+{{ $styles := resources.Get "css/videos.css" }}
+{{ if $styles }}
+{{ $styles = $styles | minify }}
+<style>{{ $styles.Content | safeCSS }}</style>
+{{ end }}
+{{- if .Params.show_page | default true }}
+
+{{- if (and site.Params.profileMode.enabled .IsHome) }}
+{{- partial "index_profile.html" . }}
+{{- else }} {{/* if not profileMode */}}
+
+{{- if not .IsHome | and .Title }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>
+    {{ .Title }}
+    {{- if and (or (eq .Kind `term`) (eq .Kind `section`)) (.Param "ShowRssButtonInSectionTermList") }}
+    {{- with .OutputFormats.Get "rss" }}
+    <a href="{{ .RelPermalink }}" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+    {{- end }}
+    {{- end }}
+  </h1>
+  {{- if .Params.subtitle }}
+  <p class="post-subtitle">
+    {{ .Params.subtitle }}
+  </p>
+  {{- end }}
+  {{- if .Description }}
+  <div class="post-description">
+    {{ .Description | markdownify }}
+  </div>
+  {{- end }}
+</header>
+{{- end }}
+
+{{- if .Content }}
+<div class="post-content">
+  {{- if not (.Param "disableAnchoredHeadings") }}
+  {{- partial "anchored_headings.html" .Content -}}
+  {{- else }}{{ .Content }}{{ end }}
+</div>
+{{- end }}
+
+{{- $videos := where (.Params.gallery_videos | default (slice)) "enabled" "!=" false -}}
+{{- range $index, $video := $videos }}
+{{- $videoID := $video.youtube_id | default (printf "video-%d" $index) -}}
+{{- $coverSrc := "" -}}
+{{- with $video.cover.image }}
+  {{- $coverSrc = . -}}
+{{- end -}}
+{{- if and (not $coverSrc) $video.youtube_id -}}
+  {{- $coverSrc = printf "https://i.ytimg.com/vi/%s/hqdefault.jpg" $video.youtube_id -}}
+{{- end -}}
+{{- $summary := ($video.body | default "" | markdownify | plainify | htmlUnescape | strings.TrimSpace) -}}
+<article class="post-entry video-entry">
+  <div class="video-entry-container">
+    {{- if $coverSrc }}
+    <figure class="entry-cover video-cover">
+      {{ partial "responsive-image.html" (dict
+          "src" $coverSrc
+          "alt" ($video.title | plainify)
+          "sizes" "(max-width: 700px) 100vw, 320px"
+          "widths" (slice 320 480 640 960)) }}
+    </figure>
+    {{- end }}
+    <div class="video-content">
+      <header class="entry-header">
+        <h2 class="entry-hint-parent">{{ $video.title }}</h2>
+      </header>
+      {{- if $summary }}
+      <div class="entry-content">
+        <p>{{ $summary | truncate 220 }}</p>
+      </div>
+      {{- end }}
+    </div>
+  </div>
+  <a class="entry-link" aria-label="video link to {{ $video.title | plainify }}" href="{{ printf "%s?video=%s" ("videos/detail/" | relLangURL) ($videoID | urlquery) }}"></a>
+</article>
+{{- end }}
+
+{{- if eq (len $videos) 0 }}
+<section class="media-empty-state">
+  <p>{{ i18n "videos_empty" }}</p>
+</section>
+{{- end }}
+
+{{- end }}{{/* end profileMode */}}
+{{- end }}
+
+{{- end }}{{- /* end main */ -}}

@@ -1,0 +1,84 @@
+{{- /*
+  Renderiza una imagen responsive usando el pipeline de Hugo:
+  redimensiona, convierte a WebP y genera srcset + width/height para evitar
+  saltos de layout (CLS).
+
+  Degrada con elegancia: si la imagen es remota (p. ej. la miniatura de
+  YouTube), no existe en assets/ o no es procesable (SVG, GIF), emite un
+  <img> simple con la URL original.
+
+  Uso:
+    {{ partial "responsive-image.html" (dict
+         "src" $src "alt" $alt "class" "gallery-img"
+         "sizes" "(max-width: 700px) 100vw, 33vw") }}
+
+  Parámetros:
+    src           ruta o URL de la imagen (obligatorio)
+    alt           texto alternativo
+    class         clases CSS
+    id            atributo id
+    sizes         atributo sizes (por defecto "100vw")
+    widths        slice de anchos candidatos para el srcset
+    loading       "lazy" (por defecto) o "eager"
+    fetchpriority "high" | "low" | "auto"
+    decoding      por defecto "async"
+    quality       calidad WebP (por defecto 82)
+*/ -}}
+{{- $src := .src | default "" -}}
+{{- if $src -}}
+{{- $alt := .alt | default "" -}}
+{{- $class := .class | default "" -}}
+{{- $id := .id | default "" -}}
+{{- $sizes := .sizes | default "100vw" -}}
+{{- $widths := .widths | default (slice 480 768 1024 1400 1920) -}}
+{{- $loading := .loading | default "lazy" -}}
+{{- $fetchpriority := .fetchpriority | default "" -}}
+{{- $decoding := .decoding | default "async" -}}
+{{- $quality := .quality | default 82 -}}
+
+{{- $res := "" -}}
+{{- $remote := or (hasPrefix $src "http://") (hasPrefix $src "https://") (hasPrefix $src "//") (hasPrefix $src "data:") -}}
+{{- if not $remote -}}
+  {{- $res = resources.Get (strings.TrimPrefix "/" $src) -}}
+{{- end -}}
+
+{{- $processable := false -}}
+{{- with $res -}}
+  {{- if in (slice "image/jpeg" "image/png" "image/webp" "image/tiff" "image/bmp") .MediaType.Type -}}
+    {{- $processable = true -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if $processable -}}
+  {{- $original := $res.Width -}}
+  {{- $targets := slice -}}
+  {{- range $widths -}}
+    {{- if lt . $original -}}
+      {{- $targets = $targets | append . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $targets = $targets | append $original -}}
+  {{- $srcset := slice -}}
+  {{- $fallback := "" -}}
+  {{- range $targets -}}
+    {{- $img := $res.Resize (printf "%dx webp q%d" . $quality) -}}
+    {{- $srcset = $srcset | append (printf "%s %dw" $img.RelPermalink $img.Width) -}}
+    {{- $fallback = $img.RelPermalink -}}
+  {{- end -}}
+  <img src="{{ $fallback }}" srcset="{{ delimit $srcset ", " }}" sizes="{{ $sizes }}" width="{{ $res.Width }}" height="{{ $res.Height }}" alt="{{ $alt }}"
+    {{- with $class }} class="{{ . }}"{{ end }}
+    {{- with $id }} id="{{ . }}"{{ end }}
+    {{- with $loading }} loading="{{ . }}"{{ end }}
+    {{- with $decoding }} decoding="{{ . }}"{{ end }}
+    {{- with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}>
+{{- else -}}
+  {{- $url := $src -}}
+  {{- with $res }}{{ $url = .RelPermalink }}{{ end -}}
+  <img src="{{ $url }}" alt="{{ $alt }}"
+    {{- with $class }} class="{{ . }}"{{ end }}
+    {{- with $id }} id="{{ . }}"{{ end }}
+    {{- with $loading }} loading="{{ . }}"{{ end }}
+    {{- with $decoding }} decoding="{{ . }}"{{ end }}
+    {{- with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}>
+{{- end -}}
+{{- end -}}

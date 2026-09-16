@@ -1,0 +1,132 @@
+{{ define "main" }}
+{{- $styles := resources.Get "css/images.css" -}}
+{{- if $styles }}{{ $styles = $styles | minify }}<style>{{ $styles.Content | safeCSS }}</style>{{ end -}}
+{{- $igStyles := resources.Get "css/instagram.css" -}}
+{{- if $igStyles }}{{ $igStyles = $igStyles | minify }}<style>{{ $igStyles.Content | safeCSS }}</style>{{ end -}}
+{{- $galleryScript := resources.Get "js/images-gallery.js" -}}
+
+{{- if .Params.show_page | default false }}
+
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- with .Params.subtitle }}
+  <p class="post-subtitle">{{ . }}</p>
+  {{- end }}
+</header>
+
+{{- with .Content }}
+<div class="post-content">{{ . }}</div>
+{{- end }}
+
+{{- /* Los datos NO viven en el front matter: los escribe el workflow de
+       sincronizacion en data/instagram.json y no se editan a mano, porque la
+       siguiente sincronizacion los sobreescribiria. Lo editable es esta
+       pagina: ajustes de la seccion y la lista de excepciones por publicacion. */ -}}
+{{- $feed := site.Data.instagram | default dict -}}
+{{- $posts := $feed.posts | default (slice) -}}
+
+{{- /* Excepciones indexadas por id, para ocultar una publicacion concreta o
+       corregirle el texto alternativo sin tocar el fichero sincronizado. */ -}}
+{{- $overrides := dict -}}
+{{- range .Params.overrides | default (slice) -}}
+  {{- with .post_id -}}{{- $overrides = merge $overrides (dict . $) -}}{{- end -}}
+{{- end -}}
+
+{{- $visible := slice -}}
+{{- range $posts -}}
+  {{- $ov := index $overrides .id | default dict -}}
+  {{- if not ($ov.hidden | default false) -}}
+    {{- $visible = $visible | append (dict "post" . "ov" $ov) -}}
+  {{- end -}}
+{{- end -}}
+{{- $max := .Params.max_items | default 9 -}}
+{{- if gt (len $visible) $max -}}{{- $visible = first $max $visible -}}{{- end -}}
+
+{{- $showCaptions := .Params.show_captions | default true -}}
+{{- $captionLang := .Params.caption_language | default site.LanguageCode -}}
+{{- $profileUrl := .Params.profile_url | default $feed.profile.permalink -}}
+
+{{- if gt (len $visible) 0 }}
+<section class="image-gallery instagram-feed" data-image-gallery>
+  {{- range $index, $entry := $visible }}
+  {{- $post := $entry.post -}}
+  {{- $ov := $entry.ov -}}
+  {{- $date := time.AsTime $post.timestamp -}}
+  {{- $alt := $ov.alt | default (printf "%s — %s" (i18n "instagram_post_alt") ($date.Format "02.01.2006")) -}}
+  {{- $caption := $post.caption | default "" -}}
+  {{- $lightboxSrc := partial "image-url.html" (dict "src" $post.image "width" 1400) -}}
+  <figure class="gallery-card instagram-card">
+    <button class="gallery-lightbox-trigger" type="button"
+            data-lightbox-index="{{ $index }}"
+            data-lightbox-src="{{ $lightboxSrc }}"
+            data-lightbox-alt="{{ $alt }}"
+            data-lightbox-title="{{ $date.Format "02.01.2006" }}"
+            data-lightbox-description="{{ $caption }}">
+      {{ partial "responsive-image.html" (dict
+          "src" $post.image
+          "alt" $alt
+          "sizes" "(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+          "widths" (slice 400 600 900 1200)) }}
+      {{- if $post.is_video }}
+      <span class="instagram-card__badge">{{ i18n "instagram_video" }}</span>
+      {{- end }}
+    </button>
+    <figcaption>
+      <p class="instagram-card__date">
+        <time datetime="{{ $date.Format "2006-01-02" }}">{{ $date.Format "02.01.2006" }}</time>
+      </p>
+      {{- if and $showCaptions $caption }}
+      {{- /* La leyenda esta en el idioma en que la escribio el musico, que no
+             tiene por que ser el de la pagina: se marca para que un lector de
+             pantalla no la pronuncie con la fonetica equivocada. */ -}}
+      <p class="instagram-card__caption" lang="{{ $captionLang }}">{{ $caption | truncate 180 }}</p>
+      {{- end }}
+      <p class="instagram-card__link">
+        <a href="{{ $post.permalink }}" target="_blank" rel="noopener noreferrer"
+           data-analytics-event="select_content" data-analytics-location="instagram_feed" data-analytics-type="instagram_post">{{ i18n "instagram_view_post" }}</a>
+      </p>
+    </figcaption>
+  </figure>
+  {{- end }}
+</section>
+
+{{- with $profileUrl }}
+<p class="instagram-follow">
+  <a href="{{ . }}" target="_blank" rel="noopener noreferrer"
+     data-analytics-event="select_content" data-analytics-location="instagram_feed" data-analytics-type="instagram_profile">{{ i18n "instagram_follow" }}{{ with $.Params.profile_handle }} · @{{ . }}{{ end }}</a>
+</p>
+{{- end }}
+
+{{- /* Mismo dialogo y mismo script que la galeria de imagenes: el feed no
+       necesita JavaScript propio. */ -}}
+<dialog class="image-lightbox" id="image-lightbox" aria-label="{{ i18n "gallery_lightbox_label" }}">
+  <div class="image-lightbox-frame">
+    <button class="image-lightbox-nav image-lightbox-nav--prev" type="button" aria-label="{{ i18n "gallery_prev_image" }}">&#10094;</button>
+    <div class="image-lightbox-content">
+      <img id="image-lightbox-preview" src="" alt="">
+      <div class="image-lightbox-meta">
+        <h2 id="image-lightbox-title"></h2>
+        <p id="image-lightbox-caption"></p>
+      </div>
+    </div>
+    <button class="image-lightbox-nav image-lightbox-nav--next" type="button" aria-label="{{ i18n "gallery_next_image" }}">&#10095;</button>
+  </div>
+</dialog>
+{{- with $galleryScript }}
+{{- $script := . | minify -}}
+{{- if not site.Params.assets.disableFingerprinting }}
+{{- $script = $script | fingerprint }}
+<script defer crossorigin="anonymous" src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
+{{- else }}
+<script defer src="{{ $script.RelPermalink }}"></script>
+{{- end }}
+{{- end }}
+{{- else }}
+<section class="media-empty-state">
+  <p>{{ i18n "instagram_empty" }}</p>
+</section>
+{{- end }}
+
+{{- end }}
+{{ end }}

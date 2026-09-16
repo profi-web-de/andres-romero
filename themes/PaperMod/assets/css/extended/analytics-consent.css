@@ -1,0 +1,161 @@
+/* Barra inferior a ancho completo: nunca debe solaparse con el contenido.
+   Antes era una tarjeta flotante abajo a la derecha que tapaba texto y tarjetas. */
+.analytics-consent {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 120;
+  width: 100%;
+  padding: 16px 24px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--entry) 96%, var(--primary) 4%);
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.analytics-consent__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 32px;
+  width: 100%;
+  max-width: var(--nav-width);
+  margin: 0 auto;
+}
+
+.analytics-consent__eyebrow,
+.analytics-consent__title,
+.analytics-consent__copy {
+  grid-column: 1;
+}
+
+.analytics-consent__actions {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  justify-content: flex-end;
+}
+
+.analytics-consent__copy {
+  max-width: 68ch;
+}
+
+.analytics-consent__eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.analytics-consent__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.analytics-consent__copy {
+  margin: 0;
+  color: var(--secondary);
+  line-height: 1.6;
+}
+
+.analytics-consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.analytics-consent__button,
+.analytics-consent__manage {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.analytics-consent__button {
+  padding: 10px 16px;
+}
+
+.analytics-consent__button:hover,
+.analytics-consent__manage:hover {
+  transform: translateY(-1px);
+}
+
+.analytics-consent__button--primary {
+  background: var(--primary);
+  color: var(--theme);
+}
+
+.analytics-consent__button--secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--primary);
+}
+
+.analytics-consent__link {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.analytics-consent__manage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  border-color: var(--border);
+  color: var(--primary);
+  box-shadow: none;
+}
+
+@media (max-width: 860px) {
+  .analytics-consent__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .analytics-consent__actions {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .analytics-consent {
+    padding: 16px;
+  }
+
+  .analytics-consent__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .analytics-consent__button,
+  .analytics-consent__link,
+  .analytics-consent__manage {
+    width: 100%;
+    text-align: center;
+  }
+}
+/* Mientras la barra esta en pantalla, el contenido reserva su altura: asi no
+   tapa nada aunque el visitante no la conteste. Si el navegador no soporta
+   :has, la barra se comporta como cualquier barra de cookies. */
+body:has(.analytics-consent) {
+  padding-bottom: 152px;
+}
+
+@media (max-width: 860px) {
+  body:has(.analytics-consent) {
+    padding-bottom: 232px;
+  }
+}

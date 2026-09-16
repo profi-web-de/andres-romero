@@ -1,0 +1,923 @@
+.home-hero {
+  position: relative;
+  width: 100vw;
+  min-height: calc(100vh - var(--header-height) - (var(--gap) * 2));
+  margin-inline: calc(50% - 50vw);
+  overflow: hidden;
+  border-radius: clamp(20px, 3vw, 32px);
+  background: #020202;
+  color: #f6f2ea;
+  isolation: isolate;
+  --hero-pad: clamp(28px, 5vw, 64px);
+  --hero-copy-width: min(42rem, 58vw);
+  --hero-media-width: clamp(320px, 31vw, 520px);
+  --hero-media-right: clamp(12px, 2.5vw, 28px);
+}
+
+.home-hero__overlay,
+.home-hero__backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.home-hero__backdrop {
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.1), transparent 32%),
+    radial-gradient(circle at top right, rgba(168, 125, 72, 0.16), transparent 28%),
+    linear-gradient(140deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.82));
+  z-index: 0;
+}
+
+.home-hero__top {
+  position: relative;
+  display: block;
+}
+
+.home-hero__intro,
+.home-hero__briefs {
+  position: relative;
+  z-index: 2;
+}
+
+.home-hero__media {
+  position: absolute;
+  top: var(--hero-pad);
+  right: var(--hero-media-right);
+  bottom: var(--hero-pad);
+  left: auto;
+  width: var(--hero-media-width);
+  padding: 0;
+  border: 0;
+  border-radius: clamp(24px, 3vw, 36px);
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-hero__media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(2, 2, 2, 0.72) 0%, rgba(2, 2, 2, 0.28) 18%, rgba(2, 2, 2, 0.06) 42%, rgba(2, 2, 2, 0) 62%),
+    linear-gradient(270deg, rgba(2, 2, 2, 0.28) 0%, rgba(2, 2, 2, 0.1) 18%, rgba(2, 2, 2, 0.03) 38%, rgba(2, 2, 2, 0) 58%),
+    linear-gradient(180deg, rgba(2, 2, 2, 0.06) 0%, rgba(2, 2, 2, 0.14) 100%);
+  border-radius: inherit;
+  z-index: 2;
+}
+
+.home-hero__slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #050505;
+}
+
+.home-hero__slides::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0.34) 100%);
+  z-index: 1;
+}
+
+.home-hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+
+.home-hero__slide.is-active {
+  opacity: 1;
+}
+
+.home-hero__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: brightness(0.78) saturate(0.96);
+  transform: scale(1.01);
+}
+
+.home-hero__overlay {
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0.18) 45%, rgba(0, 0, 0, 0.42) 100%),
+    linear-gradient(110deg, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.12) 48%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+.home-hero__content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: inherit;
+  padding: var(--hero-pad);
+  gap: clamp(28px, 4vw, 48px);
+}
+
+.home-hero__intro {
+  max-width: min(38rem, 100%);
+  padding-top: clamp(8px, 2vw, 20px);
+}
+
+.home-hero__eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(246, 242, 234, 0.72);
+}
+
+.home-hero__title {
+  margin: 0;
+  font-size: clamp(3rem, 8vw, 5.8rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  color: #fffaf2;
+}
+
+.home-hero__subtitle {
+  max-width: 36rem;
+  margin: 18px 0 0;
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  line-height: 1.65;
+  color: rgba(246, 242, 234, 0.84);
+}
+
+.home-hero__briefs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  align-items: end;
+}
+
+.home-brief {
+  min-height: 220px;
+  padding: 22px 22px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.home-brief h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
+  color: #fffaf2;
+}
+
+.home-brief p {
+  margin: 0;
+  line-height: 1.68;
+  color: rgba(246, 242, 234, 0.8);
+}
+
+.home-events {
+  padding: clamp(48px, 7vw, 92px) clamp(28px, 5vw, 64px);
+}
+
+.home-events__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: clamp(22px, 3vw, 30px);
+  text-align: left;
+}
+
+.home-events__eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+
+.home-events__title {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--band-fg);
+}
+
+.home-events__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 22rem));
+  gap: 18px;
+  justify-content: flex-start;
+  justify-items: stretch;
+}
+
+.home-events__actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+}
+
+.home-events__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid var(--band-hairline);
+  border-radius: 999px;
+  background: var(--band-card);
+  color: var(--band-fg);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.home-events__link:hover,
+.home-events__link:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--band-accent);
+  background: var(--band-card-strong);
+}
+
+.home-video {
+  position: relative;
+  overflow: hidden;
+  border-radius: clamp(20px, 3vw, 32px);
+  isolation: isolate;
+}
+
+.home-video__backdrop,
+.home-video__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.home-video__backdrop {
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.1), transparent 32%),
+    radial-gradient(circle at top right, rgba(168, 125, 72, 0.16), transparent 28%),
+    linear-gradient(140deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.82));
+  z-index: 0;
+}
+
+.home-video__overlay {
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.18) 42%, rgba(0, 0, 0, 0.44) 100%),
+    linear-gradient(110deg, rgba(0, 0, 0, 0.52) 0%, rgba(0, 0, 0, 0.12) 48%, rgba(0, 0, 0, 0.34) 100%);
+}
+
+.home-video__content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(18px, 3vw, 24px);
+  padding: clamp(28px, 5vw, 64px);
+  justify-items: center;
+}
+
+.home-video__title {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: var(--band-fg);
+  text-align: center;
+}
+
+.home-video__frame {
+  position: relative;
+  width: min(100%, 920px);
+  padding: clamp(12px, 2vw, 18px);
+  border: 1px solid var(--band-hairline);
+  border-radius: 28px;
+  background: var(--band-card);
+  box-shadow: var(--band-card-shadow);
+}
+
+.home-video__embed {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #050505;
+}
+
+.home-video__embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.home-event-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: 100%;
+  width: 100%;
+  padding: 24px;
+  border: 1px solid var(--band-hairline);
+  border-radius: 24px;
+  background: var(--band-card);
+  box-shadow: var(--band-card-shadow);
+}
+
+.home-event-card__date {
+  margin: 0;
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+
+.home-event-card__title {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  line-height: 1.2;
+  color: var(--band-fg);
+}
+
+.home-event-card__meta {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.home-event-card__meta div {
+  display: grid;
+  gap: 4px;
+}
+
+.home-event-card__meta dt {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+
+.home-event-card__meta dd {
+  margin: 0;
+  color: var(--band-fg);
+}
+
+.home-event-card__summary {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.68;
+  color: var(--band-muted);
+}
+
+.home-event-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  font-weight: 600;
+}
+
+.home-event-card__link::after {
+  content: ">";
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.home-event-card__link:hover::after,
+.home-event-card__link:focus-visible::after {
+  transform: translateX(3px);
+}
+
+:root[data-theme="light"] .home-hero__backdrop {
+  background:
+    radial-gradient(circle at top left, rgba(255, 248, 236, 0.2), transparent 30%),
+    radial-gradient(circle at top right, rgba(168, 125, 72, 0.18), transparent 24%),
+    linear-gradient(140deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.64));
+}
+
+:root[data-theme="light"] .home-hero__media::before {
+  background:
+    linear-gradient(90deg, rgba(2, 2, 2, 0.42) 0%, rgba(2, 2, 2, 0.18) 18%, rgba(2, 2, 2, 0.06) 42%, rgba(2, 2, 2, 0) 62%),
+    linear-gradient(270deg, rgba(2, 2, 2, 0.16) 0%, rgba(2, 2, 2, 0.08) 18%, rgba(2, 2, 2, 0.03) 38%, rgba(2, 2, 2, 0) 58%),
+    linear-gradient(180deg, rgba(2, 2, 2, 0.04) 0%, rgba(2, 2, 2, 0.1) 100%);
+}
+
+:root[data-theme="light"] .home-brief {
+  background: transparent;
+}
+
+:root[data-theme="light"] .home-hero__media {
+  background: transparent;
+}
+
+@media (max-width: 960px) {
+  .home-hero {
+    --hero-copy-width: min(34rem, 58vw);
+    --hero-media-width: clamp(260px, 34vw, 400px);
+  }
+
+  .home-hero__briefs {
+    grid-template-columns: 1fr;
+  }
+
+  .home-events__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-video {
+    border-radius: 24px;
+  }
+
+  .home-brief {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-hero {
+    --hero-copy-width: 100%;
+  }
+
+  .home-hero__top {
+    min-height: clamp(320px, 72vw, 460px);
+  }
+
+  .home-hero__intro {
+    max-width: min(32rem, 100%);
+    z-index: 3;
+  }
+
+  .home-hero__media {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    border-radius: 0;
+    opacity: 0.62;
+  }
+
+  .home-hero__media::before {
+    background:
+      linear-gradient(180deg, rgba(2, 2, 2, 0.22) 0%, rgba(2, 2, 2, 0.36) 42%, rgba(2, 2, 2, 0.62) 100%),
+      linear-gradient(90deg, rgba(2, 2, 2, 0.58) 0%, rgba(2, 2, 2, 0.22) 48%, rgba(2, 2, 2, 0.58) 100%);
+  }
+}
+
+@media (max-width: 640px) {
+  .home-hero {
+    border-radius: 18px;
+    --hero-pad: 22px;
+  }
+
+  .home-hero__content {
+    padding: 22px;
+  }
+
+  .home-hero__media {
+    opacity: 0.56;
+  }
+
+  .home-hero__subtitle {
+    margin-top: 14px;
+  }
+
+  .home-brief {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .home-events {
+    padding-inline: 22px;
+  }
+
+  .home-event-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__slide {
+    transition: none;
+  }
+}
+/* ===========================================================================
+   Rediseño de portada
+   Bloque final a propósito: sobrescribe las reglas anteriores del archivo sin
+   reescribirlas, para que el diff se lea como lo que es.
+   =========================================================================== */
+
+/* El hero era una caja negra con esquinas redondeadas flotando sobre fondo
+   claro: se leía como un widget, no como la portada de un artista. A sangre. */
+.home-hero {
+  border-radius: 0;
+}
+
+/* La foto llega hasta el borde y ocupa toda la altura, en vez de ser un
+   panelito recortado con su propio radio. */
+.home-hero__media {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(340px, 48vw, 820px);
+  border-radius: 0;
+  opacity: 1;
+}
+
+/* Degradado horizontal: el retrato se funde con el negro donde empieza el
+   texto, sin necesidad de oscurecer la foto entera. */
+.home-hero__media::before {
+  background:
+    linear-gradient(90deg, #020202 0%, rgba(2, 2, 2, 0.92) 14%, rgba(2, 2, 2, 0.5) 40%, rgba(2, 2, 2, 0.08) 72%, rgba(2, 2, 2, 0) 100%),
+    linear-gradient(180deg, rgba(2, 2, 2, 0) 55%, rgba(2, 2, 2, 0.35) 100%);
+}
+
+.home-hero__slides {
+  border-radius: 0;
+}
+
+.home-hero__slide img {
+  filter: brightness(0.92) saturate(1);
+  object-position: center 22%;
+}
+
+.home-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.9rem, 6.6vw, 5rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.home-hero__eyebrow {
+  font-family: var(--font-body);
+  letter-spacing: 0.26em;
+}
+
+.home-hero__subtitle {
+  font-family: var(--font-body);
+}
+
+/* El número de cada faceta lleva el acento: es el único punto de color del
+   hero. */
+.home-brief h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* El bloque de video: fuera el doble marco crema, que era lo más "plantilla
+   de 2015" de la página. El video manda; el título baja un escalón para no
+   competir con el nombre del artista. */
+.home-video {
+  border-radius: 0;
+}
+
+.home-video__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 2.05rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  max-width: 46rem;
+}
+
+.home-video__frame,
+:root[data-theme="light"] .home-video__frame {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+.home-video__embed {
+  border-radius: 6px;
+}
+
+@media (max-width: 960px) {
+  .home-video {
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  /* En móvil la foto es el fondo del hero: sube de opacidad y el texto se
+     apoya en un velo inferior sólido en vez de pelearse con la imagen. */
+  .home-hero__media {
+    width: auto;
+    left: 0;
+    opacity: 0.78;
+  }
+
+  .home-hero__media::before {
+    background:
+      linear-gradient(180deg, rgba(2, 2, 2, 0.35) 0%, rgba(2, 2, 2, 0.55) 45%, rgba(2, 2, 2, 0.88) 100%);
+  }
+}
+
+@media (max-width: 640px) {
+  .home-hero {
+    border-radius: 0;
+  }
+
+  .home-hero__media {
+    opacity: 0.75;
+  }
+}
+
+/* --- Prensa y cierre ------------------------------------------------------ */
+
+.home-press {
+  padding: clamp(56px, 8vw, 104px) clamp(28px, 5vw, 64px) clamp(56px, 7vw, 92px);
+}
+
+.home-press__title {
+  margin: 0 0 clamp(28px, 4vw, 44px);
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  letter-spacing: -0.02em;
+  color: var(--band-fg);
+}
+
+.home-press__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: clamp(28px, 4vw, 48px);
+  max-width: 78rem;
+}
+
+/* Columna flexible para poder anclar el pie abajo: si no, el nombre del medio
+   queda a la altura que le toque segun lo larga que sea cada cita. */
+.home-quote {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--band-accent);
+}
+
+.home-quote blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--band-fg);
+}
+
+.home-quote blockquote::before {
+  content: "\201C";
+}
+
+.home-quote blockquote::after {
+  content: "\201D";
+}
+
+.home-quote figcaption {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+
+.home-quote figcaption a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.home-quote figcaption a:hover {
+  color: var(--band-accent);
+}
+
+.home-cta {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding: clamp(56px, 8vw, 96px) clamp(28px, 5vw, 64px);
+  background: var(--accent-surface);
+  color: var(--on-accent-surface);
+}
+
+.home-cta__inner {
+  max-width: 46rem;
+}
+
+.home-cta__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: inherit;
+}
+
+.home-cta__text {
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--on-accent-surface) 88%, transparent);
+}
+
+.home-cta__button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  margin-top: 2rem;
+  padding: 0 2rem;
+  border: 1px solid color-mix(in srgb, var(--on-accent-surface) 45%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.home-cta__button:hover {
+  background: var(--on-accent-surface);
+  color: var(--accent-surface);
+}
+
+/* La foto ya no vive dentro del bloque de texto, asi que se posiciona contra
+   el hero completo: ocupa toda la altura y llega al borde derecho. */
+.home-hero__media {
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  height: auto;
+}
+
+/* El velo general se aclara por la derecha para no apagar el retrato; el
+   degradado propio de la foto ya resuelve la legibilidad del texto. */
+.home-hero__overlay {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.1) 55%, rgba(0, 0, 0, 0.3) 100%),
+    linear-gradient(110deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.05) 52%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Las tres tarjetas alineaban por abajo (align-items:end), asi que con textos
+   de distinto largo empezaban a alturas distintas. */
+.home-hero__briefs {
+  align-items: stretch;
+}
+
+.home-brief {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-brief p {
+  margin-top: auto;
+}
+
+/* --- Tarjetas del hero enlazadas ------------------------------------------ */
+
+/* El enlace vive en el <h2> por accesibilidad, pero se estira sobre la tarjeta
+   entera con un ::after posicionado, que es lo que espera quien navega con el
+   ratón. El texto sigue siendo seleccionable. */
+.home-brief--linked {
+  position: relative;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.home-brief--linked h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-brief--linked h2 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+/* La flecha es la única señal de que la tarjeta lleva a algún sitio: sin ella
+   el usuario no tiene motivo para hacer clic. */
+.home-brief--linked h2 a::before {
+  content: "→";
+  float: right;
+  margin-left: 0.5rem;
+  color: var(--accent-on-dark);
+  transition: transform 0.25s ease;
+}
+
+.home-brief--linked:hover,
+.home-brief--linked:focus-within {
+  border-color: color-mix(in srgb, var(--accent-on-dark) 45%, transparent);
+  transform: translateY(-2px);
+}
+
+.home-brief--linked:hover h2 a::before,
+.home-brief--linked:focus-within h2 a::before {
+  transform: translateX(3px);
+}
+
+.home-brief--linked h2 a:focus-visible::after {
+  outline: 2px solid var(--accent-on-dark);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-brief--linked,
+  .home-brief--linked h2 a::before {
+    transition: none;
+  }
+}
+
+/* ===========================================================================
+   Ritmo de bandas de la portada
+
+   Antes cada seccion fijaba su propio fondo (.home-video era negro siempre) y
+   se separaba de la anterior con un margen. Con los conciertos ocultos, hero y
+   video quedaban pegados y el margen entre dos bandas negras se veia como una
+   franja clara suelta a mitad de la portada.
+
+   Ahora el tono no lo decide la seccion sino su POSICION: la plantilla numera
+   las bandas que realmente se renderizan y les pone home-band--base o
+   home-band--ink alternadamente. Da igual que se oculten los conciertos, la
+   prensa o el video: la alternancia se recalcula sola. El hero (foto) y el
+   cierre (acento) quedan fuera del ciclo porque su color es su identidad.
+
+   Cada banda expone sus propios tokens --band-* y las piezas de dentro
+   (tarjetas, filetes, textos secundarios) los leen. Por eso ya no hay reglas
+   :root[data-theme="light"] para estas piezas: el contraste lo fija la banda,
+   no el tema.
+   =========================================================================== */
+
+.home-band {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  margin-block: 0;
+}
+
+/* Banda clara: es el fondo de la pagina, sea cual sea el tema. */
+.home-band--base {
+  background: var(--theme);
+  color: var(--primary);
+
+  --band-fg: var(--primary);
+  --band-muted: var(--secondary);
+  --band-accent: var(--accent);
+  --band-hairline: var(--border);
+  --band-card: var(--entry);
+  --band-card-strong: var(--entry);
+  --band-card-shadow: 0 20px 56px rgba(63, 43, 18, 0.08);
+}
+
+/* Banda de tinta: casi negra en ambos temas, como el hero. El acento cambia a
+   su variante clara porque el granate oscuro no se lee sobre negro. */
+.home-band--ink {
+  background: var(--band-ink-surface);
+  color: var(--band-ink-fg);
+
+  --band-fg: var(--band-ink-fg);
+  --band-muted: rgba(246, 242, 234, 0.62);
+  --band-accent: var(--accent-on-dark);
+  --band-hairline: rgba(255, 255, 255, 0.12);
+  --band-card: rgba(255, 255, 255, 0.05);
+  --band-card-strong: rgba(255, 255, 255, 0.1);
+  --band-card-shadow: 0 22px 70px rgba(0, 0, 0, 0.3);
+}
+
+:root {
+  --band-ink-surface: #0c0c0d;
+  --band-ink-fg: #f6f2ea;
+}
+
+/* En oscuro la tinta se separa del fondo de pagina por poco: dos negros
+   distintos bastan para marcar el ritmo sin que la portada parpadee. */
+:root[data-theme="dark"] {
+  --band-ink-surface: #0e0f11;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --band-ink-surface: #0e0f11;
+  }
+}
+
+/* Los degradados decorativos del video son ropa de banda oscura. */
+.home-band--base .home-video__backdrop,
+.home-band--base .home-video__overlay {
+  display: none;
+}
+
+.home-band--base .home-video__embed {
+  background: var(--tertiary);
+}

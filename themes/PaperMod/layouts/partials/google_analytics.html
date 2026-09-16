@@ -1,0 +1,87 @@
+{{- $googleAnalyticsID := site.Config.Services.GoogleAnalytics.ID | default site.Params.analytics.google.MeasurementID | strings.TrimSpace -}}
+{{- $pagePath := .RelPermalink | default "/" -}}
+{{- if and $googleAnalyticsID (not (hasPrefix $pagePath "/admin")) -}}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsID }}"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    window.gtag = window.gtag || gtag;
+    window.paperModAnalytics = window.paperModAnalytics || {};
+
+    window.paperModAnalytics.measurementId = '{{ $googleAnalyticsID }}';
+    window.paperModAnalytics.language = '{{ site.Language.Lang }}';
+    window.paperModAnalytics.pagePath = '{{ $pagePath }}';
+    window.paperModAnalytics.consentStorageKey = 'papermod-ga4-consent';
+
+    window.paperModAnalytics.getConsentState = function () {
+        try {
+            return localStorage.getItem(window.paperModAnalytics.consentStorageKey);
+        } catch (error) {
+            return null;
+        }
+    };
+
+    window.paperModAnalytics.hasConsent = function () {
+        return window.paperModAnalytics.getConsentState() === 'granted';
+    };
+
+    window.paperModAnalytics.updateConsent = function (granted) {
+        var analyticsState = granted ? 'granted' : 'denied';
+
+        try {
+            localStorage.setItem(window.paperModAnalytics.consentStorageKey, analyticsState);
+        } catch (error) {
+            // Ignore storage failures and keep the runtime state in memory only.
+        }
+
+        gtag('consent', 'update', {
+            analytics_storage: analyticsState,
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied'
+        });
+
+        if (granted) {
+            gtag('config', window.paperModAnalytics.measurementId, {
+                send_page_view: true,
+                anonymize_ip: true,
+                page_language: window.paperModAnalytics.language,
+                page_path: window.paperModAnalytics.pagePath
+            });
+        }
+
+        return analyticsState;
+    };
+
+    window.paperModAnalytics.track = function (eventName, params) {
+        if (typeof window.gtag !== 'function' || !window.paperModAnalytics.hasConsent()) {
+            return false;
+        }
+
+        gtag('event', eventName, params || {});
+        return true;
+    };
+
+    var consentGranted = window.paperModAnalytics.hasConsent();
+
+    gtag('consent', 'default', {
+        analytics_storage: consentGranted ? 'granted' : 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+    });
+
+    gtag('js', new Date());
+    gtag('config', window.paperModAnalytics.measurementId, {
+        send_page_view: consentGranted,
+        anonymize_ip: true,
+        page_language: window.paperModAnalytics.language,
+        page_path: window.paperModAnalytics.pagePath
+    });
+</script>
+{{- end -}}

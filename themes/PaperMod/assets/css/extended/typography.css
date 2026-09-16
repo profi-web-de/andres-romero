@@ -1,0 +1,176 @@
+/* ---------------------------------------------------------------------------
+   Tipografía y color de acento del sitio.
+
+   Pareja tipográfica: Playfair Display (serif de display) para titulares e
+   Inter para el cuerpo. El contraste serif/sans es el lenguaje visual habitual
+   de salas de concierto y sellos clásicos; la sans del sistema dejaba el sitio
+   con aspecto de plantilla sin marcar.
+
+   Las @font-face las emite layouts/partials/extend_head.html con las fuentes
+   autoalojadas.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+
+  /* Acento único: granate de telón. Se usa con cuentagotas, solo en
+     enlaces, estados activos y detalles editoriales.
+
+     Dos familias distintas a propósito:
+       --accent / --accent-strong  = TINTA (texto, filetes, subrayados)
+       --accent-surface            = SUPERFICIE (rellenos grandes)
+     En modo oscuro la tinta tiene que aclararse para leerse sobre negro,
+     pero una superficie con ese mismo rosa claro se convierte en una plancha
+     pálida enorme. Por eso la superficie se oscurece en vez de aclararse.
+
+     --accent-on-dark es para los bloques que son negros en ambos temas
+     (el hero): ahí el color no debe cambiar con el tema. */
+  --accent: #8a2b34;
+  --accent-strong: #6f222a;
+  --accent-surface: #8a2b34;
+  --on-accent-surface: #fdf8f2;
+  --accent-on-dark: #d98f97;
+}
+
+:root[data-theme="dark"] {
+  --accent: #d08a92;
+  --accent-strong: #e0a5ac;
+  --accent-surface: #5e1d24;
+  --on-accent-surface: #f7e7e9;
+}
+
+/* Red de seguridad para el modo automático sin JavaScript.
+
+   Con defaultTheme = 'auto', el script de PaperMod resuelve la preferencia del
+   sistema a un data-theme concreto, así que el bloque de arriba basta en el
+   99 % de los casos. Pero ese script no corre sin JS: entonces PaperMod aplica
+   sus variables oscuras por prefers-color-scheme y el atributo se queda en
+   "auto", con lo que estos acentos se quedarían en su versión clara — tinta
+   granate sobre fondo negro. El :not() deja que una elección explícita de tema
+   claro siga mandando. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #d08a92;
+    --accent-strong: #e0a5ac;
+    --accent-surface: #5e1d24;
+    --on-accent-surface: #f7e7e9;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4,
+.post-title,
+.page-header h1,
+.entry-header h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.18;
+}
+
+/* Escala tipográfica fluida: antes los saltos eran bruscos y el titular de
+   una sección competía con el nombre del artista. */
+.post-title,
+.page-header h1 {
+  font-size: clamp(2.1rem, 1.5rem + 2.2vw, 3.1rem);
+  letter-spacing: -0.02em;
+}
+
+.post-content h2 {
+  margin-top: 2.4em;
+  font-size: clamp(1.45rem, 1.2rem + 0.9vw, 1.9rem);
+}
+
+.post-content h3 {
+  margin-top: 1.8em;
+  font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.4rem);
+}
+
+.post-content p {
+  margin-bottom: 1.15em;
+}
+
+.post-subtitle,
+.page-header .post-description {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--secondary);
+}
+
+/* El nombre del artista en la cabecera: es la firma del sitio, no un logotipo
+   de producto. */
+.logo a {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+#menu a,
+.footer-menu a,
+.footer-menu summary {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+/* --- Acento --- */
+
+.post-content a,
+.post-content a:visited {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 0.22em;
+}
+
+.post-content a:hover {
+  color: var(--accent-strong);
+  text-decoration-color: currentColor;
+}
+
+#menu .active {
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.4em;
+}
+
+/* Citas: en un sitio de músico las citas de crítica son el material más
+   valioso de la página, así que dejan de parecer un bloque de código. */
+.post-content blockquote {
+  margin: 2.2em 0;
+  padding: 0 0 0 1.4rem;
+  border-inline-start: 2px solid var(--accent);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.15rem, 1.05rem + 0.5vw, 1.45rem);
+  line-height: 1.45;
+  color: var(--primary);
+}
+
+.post-content blockquote p {
+  margin-bottom: 0.4em;
+}
+
+/* Retrato de cabecera en páginas sueltas (biografía). */
+.page-portrait {
+  margin: 1.8rem 0 2.4rem;
+}
+
+/* height:auto es obligatorio: el partial emite los atributos width/height del
+   HTML y, sin esto, esa altura es definitiva y el aspect-ratio se ignora. */
+.page-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center 25%;
+  border-radius: 4px;
+}

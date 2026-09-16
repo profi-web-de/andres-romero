@@ -1,0 +1,82 @@
+# Sincroniza las ultimas publicaciones de Instagram y republica el sitio.
+#
+# Las imagenes se descargan al repositorio a proposito: las URL que devuelve la
+# API son de un CDN firmado y caducan a los pocos dias. Ademas, asi pasan por el
+# pipeline de imagenes de Hugo y el sitio no depende de un tercero en tiempo de
+# carga.
+#
+# Sin el secret IG_ACCESS_TOKEN el job no falla: no toca nada y la ultima
+# instantanea publicada sigue en pie.
+name: Sync Instagram feed
+
+on:
+  schedule:
+    # Todos los dias a las 04:15 UTC. El limite de la API es ~200 llamadas/hora
+    # por cuenta, asi que una vez al dia va sobrado.
+    - cron: "15 4 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: "instagram-sync"
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    # Los secrets se exponen como env del job a proposito: el contexto
+    # "secrets" no se puede leer en el "if" de un paso, pero "env" si.
+    env:
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      IG_TOKEN_WRITER_PAT: ${{ secrets.IG_TOKEN_WRITER_PAT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Sync feed
+        run: python3 scripts/sync_instagram.py
+
+      - name: Commit changes
+        id: commit
+        run: |
+          if [[ -z "$(git status --porcelain data/instagram.json assets/images/instagram)" ]]; then
+            echo "Sin cambios en el feed."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/instagram.json assets/images/instagram
+          git commit -m "Sync Instagram feed"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # El token de larga duracion vive 60 dias. El refresco devuelve uno nuevo
+      # pero el viejo sigue valido hasta caducar, asi que solo sirve si se
+      # guarda: hace falta un PAT con permiso de escritura sobre los secrets.
+      # Sin ese PAT el paso se salta y hay que renovarlo a mano antes de los 60
+      # dias.
+      - name: Refresh access token
+        if: ${{ env.IG_ACCESS_TOKEN != '' && env.IG_TOKEN_WRITER_PAT != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.IG_TOKEN_WRITER_PAT }}
+        run: |
+          NEW_TOKEN="$(python3 scripts/sync_instagram.py --refresh-token | tail -n 1)"
+          if [[ -n "$NEW_TOKEN" ]]; then
+            gh secret set IG_ACCESS_TOKEN --body "$NEW_TOKEN" --repo "$GITHUB_REPOSITORY"
+            echo "Token renovado por 60 dias mas."
+          fi
+
+  # Un commit hecho con el GITHUB_TOKEN no dispara el workflow de Pages, asi que
+  # el despliegue se invoca explicitamente.
+  deploy:
+    needs: sync
+    if: ${{ needs.sync.outputs.changed == 'true' }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/hugo.yml

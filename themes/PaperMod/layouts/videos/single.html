@@ -1,0 +1,91 @@
+{{ define "main" }}
+{{ $styles := resources.Get "css/videos.css" }}
+{{ if $styles }}
+{{ $styles = $styles | minify }}
+<style>{{ $styles.Content | safeCSS }}</style>
+{{ end }}
+{{- $videos := where (.CurrentSection.Params.gallery_videos | default (slice)) "enabled" "!=" false -}}
+<article class="post-single video-detail-page">
+  <header class="post-header">
+    {{- partial "breadcrumbs.html" . }}
+    <p style="margin-bottom: 1rem;">
+      {{- $backLabel := i18n "videos_back" }}
+      <a href="{{ "videos/" | relLangURL }}" aria-label="{{ $backLabel }}">&larr; {{ $backLabel }}</a>
+    </p>
+  </header>
+
+  <div id="video-detail-empty" class="media-empty-state" hidden>
+    <p>{{ i18n "video_not_found" }}</p>
+  </div>
+
+  <div id="video-detail-list">
+    {{- range $index, $video := $videos }}
+    {{- $videoID := $video.youtube_id | default (printf "video-%d" $index) -}}
+    {{- $coverSrc := "" -}}
+    {{- with $video.cover.image }}
+      {{- $coverSrc = . -}}
+    {{- end -}}
+    <section class="video-detail-item" data-video-id="{{ $videoID }}" hidden>
+      <h1 class="post-title entry-hint-parent">{{ $video.title }}</h1>
+      {{- with $video.date }}
+      <p class="video-detail-date">{{ time.Format ":date_medium" . }}</p>
+      {{- end }}
+      {{- if $video.youtube_id }}
+      <div class="video-detail-player-frame">
+        <div class="video-detail-player">
+          <iframe src="https://www.youtube-nocookie.com/embed/{{ $video.youtube_id }}?rel=0"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                  title="{{ $video.title | plainify }}"></iframe>
+        </div>
+      </div>
+      {{- else if $coverSrc }}
+      <div class="video-detail-player-frame">
+        <figure class="video-detail-cover">
+          {{ partial "responsive-image.html" (dict
+              "src" $coverSrc
+              "alt" ($video.title | plainify)
+              "sizes" "(max-width: 900px) 100vw, 800px"
+              "widths" (slice 480 768 1024 1400)) }}
+        </figure>
+      </div>
+      {{- end }}
+      {{- with $video.body }}
+      <div class="video-detail-body-frame">
+        <div class="post-content video-detail-body">
+          {{ . | markdownify }}
+        </div>
+      </div>
+      {{- end }}
+    </section>
+    {{- end }}
+  </div>
+
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const requestedVideo = params.get('video');
+      const items = Array.from(document.querySelectorAll('[data-video-id]'));
+      const emptyState = document.getElementById('video-detail-empty');
+      const selectedItem = items.find((item) => item.dataset.videoId === requestedVideo) || items[0];
+
+      if (!selectedItem) {
+        emptyState.hidden = false;
+        return;
+      }
+
+      items.forEach((item) => {
+        item.hidden = item !== selectedItem;
+      });
+
+      emptyState.hidden = true;
+      const title = selectedItem.querySelector('.post-title');
+      if (title && title.textContent) {
+        document.title = `${title.textContent.trim()} | ${document.title}`;
+      }
+    })();
+  </script>
+</article>
+{{ end }}

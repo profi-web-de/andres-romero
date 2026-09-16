@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------------------
+# Hugo
+# ---------------------------------------------------------------------------
+# El sitio se compila en CI (.github/workflows/hugo.yml): el build nunca entra
+# al repo. /resources/_gen es la caché de imágenes procesadas; se regenera sola
+# y commitearla ensucia cada diff con binarios.
+/public/
+/resources/_gen/
+.hugo_build.lock
+hugo_stats.json
+
+# OJO, esto SÍ va al repo aunque lo parezca:
+#   themes/PaperMod/      el tema está vendorizado con sus customizaciones,
+#                         no es un submódulo — sin él CI no compila
+#   assets/images/        el media que sube Andrés desde el CMS
+#   assets/fonts/         las tipografías autoalojadas
+#   data/instagram.json   lo escribe el workflow de sincronización
+#   static/admin/         el panel del CMS
+
+# ---------------------------------------------------------------------------
+# Sistema operativo
+# ---------------------------------------------------------------------------
+.DS_Store
+**/.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------------------
+# Editores
+# ---------------------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# ---------------------------------------------------------------------------
+# Node — el workflow ejecuta `npm ci` si encuentra un lockfile
+# ---------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---------------------------------------------------------------------------
+# Python — scripts/sync_instagram.py
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ---------------------------------------------------------------------------
+# Secretos
+# ---------------------------------------------------------------------------
+# IG_ACCESS_TOKEN e IG_TOKEN_WRITER_PAT viven en los secrets del repo en
+# GitHub. Si alguna vez se prueba el script en local, que el .env no se cuele.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---------------------------------------------------------------------------
+# Trabajo suelto
+# ---------------------------------------------------------------------------
+Claude outputs/
+/tmp/
+/scratch/
+*.log

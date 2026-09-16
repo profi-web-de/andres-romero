@@ -1,0 +1,144 @@
+{{- $googleAnalyticsID := site.Config.Services.GoogleAnalytics.ID | default site.Params.analytics.google.MeasurementID | strings.TrimSpace -}}
+{{- $pagePath := .RelPermalink | default "/" -}}
+{{- $analyticsEnabled := and $googleAnalyticsID (not (hasPrefix $pagePath "/admin")) -}}
+{{- $privacyPage := site.GetPage "/privacy" -}}
+{{- if not $privacyPage -}}
+{{- $privacyPage = site.GetPage "privacy" -}}
+{{- end -}}
+
+{{- if $analyticsEnabled }}
+<div class="analytics-consent" data-analytics-consent hidden>
+    <div class="analytics-consent__content">
+        <p class="analytics-consent__eyebrow">{{ i18n "analytics_consent_eyebrow" | default "Analytics" }}</p>
+        <p class="analytics-consent__title">{{ i18n "analytics_consent_title" | default "Help improve this website" }}</p>
+        <p class="analytics-consent__copy">{{ i18n "analytics_consent_copy" | default "We use Google Analytics 4 to understand visits and improve the site. Analytics stay disabled until you accept." }}</p>
+        <div class="analytics-consent__actions">
+            <button type="button" class="analytics-consent__button analytics-consent__button--primary" data-analytics-action="accept">{{ i18n "analytics_consent_accept" | default "Accept analytics" }}</button>
+            <button type="button" class="analytics-consent__button analytics-consent__button--secondary" data-analytics-action="reject">{{ i18n "analytics_consent_reject" | default "Reject" }}</button>
+            {{- with $privacyPage }}
+            <a class="analytics-consent__link" href="{{ .RelPermalink }}">{{ i18n "analytics_consent_privacy" | default "Privacy details" }}</a>
+            {{- end }}
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var consentBanner = document.querySelector('[data-analytics-consent]');
+        var manageButtons = document.querySelectorAll('[data-analytics-manage]');
+        var analytics = window.paperModAnalytics;
+        var language = '{{ site.Language.Lang }}';
+
+        if (!consentBanner || !analytics) {
+            return;
+        }
+
+        function textValue(element) {
+            return (element.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+        }
+
+        function showBanner() {
+            consentBanner.hidden = false;
+        }
+
+        function hideBanner() {
+            consentBanner.hidden = true;
+        }
+
+        if (analytics.getConsentState()) {
+            hideBanner();
+        } else {
+            showBanner();
+        }
+
+        consentBanner.addEventListener('click', function (event) {
+            var actionButton = event.target.closest('[data-analytics-action]');
+
+            if (!actionButton) {
+                return;
+            }
+
+            var granted = actionButton.dataset.analyticsAction === 'accept';
+
+            analytics.updateConsent(granted);
+            hideBanner();
+        });
+
+        manageButtons.forEach(function (manageButton) {
+            manageButton.addEventListener('click', function () {
+                showBanner();
+            });
+        });
+
+        function trackDatasetEvent(element) {
+            if (!element || !element.dataset.analyticsEvent) {
+                return false;
+            }
+
+            var params = {
+                page_language: language
+            };
+
+            if (element.dataset.analyticsLabel) {
+                params.label = element.dataset.analyticsLabel;
+            }
+
+            if (element.dataset.analyticsLocation) {
+                params.location = element.dataset.analyticsLocation;
+            }
+
+            if (element.dataset.analyticsType) {
+                params.type = element.dataset.analyticsType;
+            }
+
+            return analytics.track(element.dataset.analyticsEvent, params);
+        }
+
+        document.addEventListener('click', function (event) {
+            var trackedElement = event.target.closest('[data-analytics-event]');
+
+            if (trackedElement) {
+                trackDatasetEvent(trackedElement);
+                return;
+            }
+
+            var link = event.target.closest('a[href]');
+
+            if (!link) {
+                return;
+            }
+
+            var href = link.getAttribute('href') || '';
+
+            if (href.indexOf('mailto:') === 0) {
+                analytics.track('contact_link_click', {
+                    channel: 'email',
+                    label: textValue(link),
+                    page_language: language
+                });
+                return;
+            }
+
+            if (href.indexOf('tel:') === 0) {
+                analytics.track('contact_link_click', {
+                    channel: 'phone',
+                    label: textValue(link),
+                    page_language: language
+                });
+                return;
+            }
+
+            if (!/^https?:/i.test(link.href) || link.origin === window.location.origin) {
+                return;
+            }
+
+            analytics.track('outbound_click', {
+                destination_host: link.host,
+                destination_path: link.pathname,
+                label: textValue(link),
+                page_language: language
+            });
+        });
+    })();
+</script>
+{{- end }}

@@ -1,0 +1,28 @@
+{{- /*
+  Decide si una sección se muestra: en el menú principal, en el pie, en su
+  propia página y en los bloques de la portada que dependen de ella.
+
+  Regla única (para que menú y página nunca se contradigan):
+    1. Si la página de sección define show_page, manda ese valor.
+    2. Si no lo define, las secciones "opt-in" de la lista quedan OCULTAS y
+       todas las demás visibles.
+
+  Las secciones opt-in son las que solo tienen sentido con datos reales
+  cargados: una agenda de conciertos vacía o de relleno no debe aparecer en un
+  sitio recién creado. Para añadir otra sección de alta voluntaria, agrégala a
+  $optIn y expón su flag en el CMS.
+
+  Uso: {{ partial "section-visible.html" $sectionPage }}
+       $sectionPage puede ser nil (una entrada de menú que no es sección):
+       en ese caso la entrada se considera visible.
+*/ -}}
+{{- $optIn := slice "concerts" -}}
+{{- $visible := true -}}
+{{- with . -}}
+  {{- if isset .Params "show_page" -}}
+    {{- $visible = .Params.show_page -}}
+  {{- else -}}
+    {{- $visible = not (in $optIn .Section) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $visible -}}

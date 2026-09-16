@@ -1,0 +1,76 @@
+{{ define "main" }}
+{{- $styles := resources.Get "css/audios.css" -}}
+{{- if $styles -}}
+{{- $styles = $styles | minify -}}
+<style>{{ $styles.Content | safeCSS }}</style>
+{{- end -}}
+{{- if .Params.show_page | default true }}
+
+{{- if not .IsHome | and .Title }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- if .Params.subtitle }}
+  <p class="post-subtitle">{{ .Params.subtitle }}</p>
+  {{- end }}
+  {{- if .Description }}
+  <div class="post-description">{{ .Description | markdownify }}</div>
+  {{- end }}
+</header>
+{{- end }}
+
+{{- if .Content }}
+<div class="post-content">
+  {{- if not (.Param "disableAnchoredHeadings") }}
+  {{- partial "anchored_headings.html" .Content -}}
+  {{- else }}{{ .Content }}{{ end }}
+</div>
+{{- end }}
+
+{{- $recordings := where (.Params.gallery_audios | default (slice)) "enabled" "!=" false -}}
+
+<section class="audio-intro-grid">
+  <article class="audio-intro-card">
+    <h2>{{ i18n "audios_featured_title" }}</h2>
+    <p>{{ i18n "audios_featured_copy" }}</p>
+  </article>
+  <article class="audio-intro-card">
+    <h2>{{ i18n "audios_format_title" }}</h2>
+    <p>{{ i18n "audios_format_copy" }}</p>
+  </article>
+</section>
+
+{{- if gt (len $recordings) 0 }}
+<section class="audio-library">
+  {{- range $recordings }}
+  {{- $external := .audio_url | default "" -}}
+  {{- if and (not $external) .youtube_id -}}
+    {{- $external = printf "https://www.youtube.com/watch?v=%s" .youtube_id -}}
+  {{- end -}}
+  {{- $summary := (.body | default "" | markdownify | plainify | htmlUnescape | strings.TrimSpace) -}}
+  <article class="audio-card">
+    <div class="audio-card-body">
+      <p class="audio-card-kicker">{{ i18n "audios_card_kicker" }}</p>
+      <h2>{{ .title }}</h2>
+      {{- if $summary }}
+      <p>{{ $summary | truncate 180 }}</p>
+      {{- end }}
+      {{- with .date }}
+      <p class="audio-card-kicker">{{ time.Format ":date_medium" . }}</p>
+      {{- end }}
+      <div class="audio-card-actions">
+        {{- if $external }}
+        <a class="button-like" href="{{ $external }}" target="_blank" rel="noopener">{{ i18n "audios_listen" }}</a>
+        {{- end }}
+      </div>
+    </div>
+  </article>
+  {{- end }}
+</section>
+{{- else }}
+<section class="media-empty-state">
+  <p>{{ i18n "audios_empty" }}</p>
+</section>
+{{- end }}
+{{- end }}
+{{ end }}

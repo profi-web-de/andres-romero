@@ -1,0 +1,231 @@
+{{- $styles := resources.Get "css/homepage.css" -}}
+{{- if $styles -}}
+{{- $styles = $styles | minify -}}
+<style>{{ $styles.Content | safeCSS }}</style>
+{{- end -}}
+
+{{- $hero := .Params.home_hero -}}
+{{- $slides := $hero.slides | default (slice) -}}
+{{- $profiles := $hero.profiles | default (slice) -}}
+{{- $autoplaySeconds := $hero.autoplay_seconds | default 4 -}}
+{{- $autoplayMs := mul $autoplaySeconds 1000 -}}
+{{- $carouselScript := resources.Get "js/homepage-carousel.js" -}}
+{{- $concertPages := where .Site.RegularPages "Section" "concerts" -}}
+{{- $upcomingEvents := where $concertPages "Date" ">=" now -}}
+{{- $concertsListPage := .Site.GetPage "section" "concerts" -}}
+{{- /* Cada bloque de la portada vive en su propio archivo bajo content/home/,
+       para que en el CMS sea un apartado independiente. Si falta el archivo o
+       está vacío, el bloque simplemente no se pinta. */ -}}
+{{- $featuredVideo := dict -}}
+{{- with site.GetPage "/home/video" }}{{ with .Params.home_featured_video }}{{ $featuredVideo = . }}{{ end }}{{ end -}}
+{{- $press := dict -}}
+{{- with site.GetPage "/home/press" }}{{ with .Params.home_press }}{{ $press = . }}{{ end }}{{ end -}}
+{{- $cta := dict -}}
+{{- with site.GetPage "/home/cta" }}{{ with .Params.home_cta }}{{ $cta = . }}{{ end }}{{ end -}}
+{{- $contactPage := "" -}}
+{{- range site.RegularPages -}}
+{{- if eq .Type "contact" -}}{{- $contactPage = . -}}{{- end -}}
+{{- end -}}
+{{- $featuredVideoId := "" -}}
+{{- with $featuredVideo.youtube_id -}}
+{{- $featuredVideoId = . | strings.TrimSpace -}}
+{{- end -}}
+{{- $subtitle := "" -}}
+{{- with $hero.subtitle -}}
+{{- $subtitle = . | plainify | chomp -}}
+{{- if gt (len $subtitle) 500 -}}
+{{- $subtitle = slicestr $subtitle 0 500 -}}
+{{- end -}}
+{{- end -}}
+
+<section class="home-hero" data-home-carousel data-interval-ms="{{ $autoplayMs }}">
+    <div class="home-hero__backdrop"></div>
+    {{- if gt (len $slides) 0 }}
+    <div class="home-hero__media">
+        <div class="home-hero__slides" aria-hidden="true">
+            {{- range $index, $slide := $slides }}
+            <figure class="home-hero__slide{{ if eq $index 0 }} is-active{{ end }}" data-slide>
+                {{ partial "responsive-image.html" (dict
+                    "src" $slide.image
+                    "alt" ($slide.alt | default site.Title)
+                    "sizes" "(max-width: 768px) 100vw, 50vw"
+                    "widths" (slice 600 900 1200 1600)
+                    "loading" (cond (eq $index 0) "eager" "lazy")
+                    "fetchpriority" (cond (eq $index 0) "high" "")) }}
+            </figure>
+            {{- end }}
+        </div>
+    </div>
+    {{- end }}
+    <div class="home-hero__overlay"></div>
+
+    <div class="home-hero__content">
+        <div class="home-hero__top">
+            <div class="home-hero__intro">
+                {{- with $hero.eyebrow }}
+                <p class="home-hero__eyebrow">{{ . }}</p>
+                {{- end }}
+                <h1 class="home-hero__title">{{ $hero.title | default site.Title }}</h1>
+                {{- with $subtitle }}
+                <p class="home-hero__subtitle">{{ . }}</p>
+                {{- end }}
+            </div>
+
+        </div>
+
+        {{- if gt (len $profiles) 0 }}
+        <div class="home-hero__briefs">
+            {{- range $profile := first 3 $profiles }}
+            {{- $link := $profile.link | default "" }}
+            <article class="home-brief{{ if $link }} home-brief--linked{{ end }}">
+                {{- /* El enlace va en el título, no envolviendo la tarjeta: así el
+                       nombre accesible del enlace es el de la sección. El CSS lo
+                       estira después para que toda la tarjeta sea pulsable. */}}
+                <h2>
+                    {{- if $link }}<a href="{{ $link | relLangURL }}">{{ $profile.title }}</a>
+                    {{- else }}{{ $profile.title }}{{ end -}}
+                </h2>
+                <p>{{ $profile.brief }}</p>
+            </article>
+            {{- end }}
+        </div>
+        {{- end }}
+    </div>
+</section>
+
+{{- /* Ritmo de bandas: el tono de fondo no lo fija cada seccion sino el orden
+       en que aparecen las que realmente se renderizan. Asi la alternancia
+       clara/oscura se mantiene aunque los conciertos, la prensa o el video
+       esten ocultos. El hero y el cierre quedan fuera: su color es su
+       identidad, no su posicion. */ -}}
+{{- $band := 0 -}}
+{{- $tone := "" -}}
+
+{{- $concertsVisible := partial "section-visible.html" $concertsListPage }}
+{{- if and $concertsVisible (gt (len $upcomingEvents) 0) }}
+{{- $band = add $band 1 }}{{ $tone = cond (eq (mod $band 2) 1) "base" "ink" }}
+<section class="home-band home-band--{{ $tone }} home-events" aria-labelledby="home-events-title">
+    <div class="home-events__header">
+        <h2 id="home-events-title" class="home-events__title">{{ i18n "upcoming_events" }}</h2>
+    </div>
+
+    <div class="home-events__grid">
+        {{- range first 3 ($upcomingEvents.ByDate) }}
+        <article class="home-event-card">
+            <p class="home-event-card__date">{{ .Date.Format "02.01.2006" }}{{ if ne (.Date.Format "15:04") "00:00" }} · {{ .Date.Format "15:04" }}{{ end }}</p>
+            <h3 class="home-event-card__title">{{ .Title }}</h3>
+
+            <dl class="home-event-card__meta">
+                {{- with .Params.city }}
+                <div>
+                    <dt>{{ i18n "city" }}</dt>
+                    <dd>{{ . }}</dd>
+                </div>
+                {{- end }}
+                {{- with .Params.venue }}
+                <div>
+                    <dt>{{ i18n "venue" }}</dt>
+                    <dd>{{ . }}</dd>
+                </div>
+                {{- end }}
+            </dl>
+
+            {{- if .Summary }}
+            <p class="home-event-card__summary">{{ .Summary | plainify | truncate 110 }}</p>
+            {{- end }}
+
+            <a class="home-event-card__link" href="{{ .RelPermalink }}" data-analytics-event="select_content" data-analytics-label="{{ .Title }}" data-analytics-location="home_events" data-analytics-type="concert">{{ i18n "more_info" }}</a>
+        </article>
+        {{- end }}
+    </div>
+
+    {{- with $concertsListPage }}
+    <div class="home-events__actions">
+        <a class="home-events__link" href="{{ .RelPermalink }}" data-analytics-event="view_item_list" data-analytics-label="{{ .Title }}" data-analytics-location="home_events" data-analytics-type="concerts_list">{{ i18n "view_all_events" }}</a>
+    </div>
+    {{- end }}
+</section>
+{{- end }}
+
+{{- if $featuredVideoId }}
+{{- $band = add $band 1 }}{{ $tone = cond (eq (mod $band 2) 1) "base" "ink" }}
+<section class="home-band home-band--{{ $tone }} home-video" aria-labelledby="home-video-title">
+    <div class="home-video__backdrop"></div>
+    <div class="home-video__overlay"></div>
+
+    <div class="home-video__content">
+        <h2 id="home-video-title" class="home-video__title">{{ $featuredVideo.title | default (i18n "featured_video") }}</h2>
+
+        <div class="home-video__frame">
+            <div class="home-video__embed">
+                <iframe
+                    src="https://www.youtube-nocookie.com/embed/{{ $featuredVideoId }}?rel=0"
+                    title="{{ $featuredVideo.title | default (i18n "featured_video") }}"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+{{- end }}
+
+{{- /* Prensa: en un sitio de musico las citas de critica son la prueba social
+       mas valiosa, y valen mas que cualquier adjetivo escrito por uno mismo. */ -}}
+{{- with $press }}
+{{- $quotes := where (.quotes | default (slice)) "quote" "!=" "" -}}
+{{- if gt (len $quotes) 0 }}
+{{- $band = add $band 1 }}{{ $tone = cond (eq (mod $band 2) 1) "base" "ink" }}
+<section class="home-band home-band--{{ $tone }} home-press" aria-labelledby="home-press-title">
+    {{- with .title }}
+    <h2 id="home-press-title" class="home-press__title">{{ . }}</h2>
+    {{- end }}
+    <div class="home-press__grid">
+        {{- range $quotes }}
+        {{- $q := . }}
+        <figure class="home-quote">
+            <blockquote>{{ $q.quote }}</blockquote>
+            {{- with $q.source }}
+            <figcaption>
+                {{- with $q.url }}<a href="{{ . }}" rel="noopener noreferrer" target="_blank">{{ end }}
+                {{- $q.source -}}
+                {{- with $q.url }}</a>{{ end }}
+            </figcaption>
+            {{- end }}
+        </figure>
+        {{- end }}
+    </div>
+</section>
+{{- end }}
+{{- end }}
+
+{{- /* Cierre: la portada terminaba en seco despues del video, sin ninguna
+       salida hacia el contacto. */ -}}
+{{- with $cta }}
+{{- if .title }}
+<section class="home-cta" aria-labelledby="home-cta-title">
+    <div class="home-cta__inner">
+        <h2 id="home-cta-title" class="home-cta__title">{{ .title }}</h2>
+        {{- with .text }}
+        <p class="home-cta__text">{{ . }}</p>
+        {{- end }}
+        {{- with $contactPage }}
+        <a class="home-cta__button" href="{{ .RelPermalink }}" data-analytics-event="select_content" data-analytics-location="home_cta" data-analytics-type="contact">{{ $cta.button_label | default .Title }}</a>
+        {{- end }}
+    </div>
+</section>
+{{- end }}
+{{- end }}
+
+{{- if gt (len $slides) 1 }}
+{{- with $carouselScript }}
+{{- $script := . | minify -}}
+{{- if not site.Params.assets.disableFingerprinting }}
+{{- $script = $script | fingerprint }}
+<script defer crossorigin="anonymous" src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
+{{- else }}
+<script defer src="{{ $script.RelPermalink }}"></script>
+{{- end }}
+{{- end }}
+{{- end }}

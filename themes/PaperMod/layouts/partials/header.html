@@ -1,0 +1,413 @@
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            {{- $label_text := (site.Params.label.text | default site.Title) }}
+            {{- if site.Title }}
+            <a href="{{ .Site.Home.RelPermalink }}" accesskey="h" title="{{ $label_text }} (Alt + H)">
+                {{- if site.Params.label.icon }}
+                {{- $img := resources.Get site.Params.label.icon }}
+                {{- if $img }}
+                    {{- $processableFormats := (slice "jpg" "jpeg" "png" "tif" "bmp" "gif") -}}
+                    {{- if hugo.IsExtended -}}
+                        {{- $processableFormats = $processableFormats | append "webp" -}}
+                    {{- end -}}
+                    {{- $prod := (hugo.IsProduction | or (eq site.Params.env "production")) }}
+                    {{- if and (in $processableFormats $img.MediaType.SubType) (eq $prod true)}}
+                        {{- if site.Params.label.iconHeight }}
+                            {{- $img = $img.Resize (printf "x%d" site.Params.label.iconHeight) }}
+                        {{ else }}
+                            {{- $img = $img.Resize "x30" }}
+                        {{- end }}
+                    {{- end }}
+                    <img src="{{ $img.Permalink }}" alt="" aria-label="logo"
+                        height="{{- site.Params.label.iconHeight | default "30" -}}">
+                {{- else }}
+                <img src="{{- site.Params.label.icon | absURL -}}" alt="" aria-label="logo"
+                    height="{{- site.Params.label.iconHeight | default "30" -}}">
+                {{- end -}}
+                {{- else if hasPrefix site.Params.label.iconSVG "<svg" }}
+                    {{ site.Params.label.iconSVG | safeHTML }}
+                {{- end -}}
+                {{- $label_text -}}
+            </a>
+            {{- end }}
+            <div class="logo-switches">
+                {{- if (not site.Params.disableThemeToggle) }}
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                {{- end }}
+                
+                {{- if (not site.Params.disableLangToggle) }}
+                    {{- $lang := .Lang}}
+                    {{- $separator := or $label_text (not site.Params.disableThemeToggle)}}
+                    {{- $translations := .AllTranslations }}
+                    {{- if not $translations }}
+                        {{- $translations = site.Home.AllTranslations }}
+                    {{- end }}
+                    {{- /* Se muestran los dos idiomas con el activo marcado: un unico
+                           "De" suelto junto al icono de tema se leia como un error. */ -}}
+                    {{- with $translations }}
+                    <ul class="lang-switch" aria-label="{{ i18n "language_switcher" }}">
+                        {{- range . -}}
+                        <li>
+                            {{- if eq $lang .Lang }}
+                            <span class="lang-switch__current" aria-current="true" title="{{ .Language.LanguageName | default (.Lang | title) }}">{{ .Lang | upper }}</span>
+                            {{- else }}
+                            <a href="{{- .RelPermalink -}}" title="{{ .Language.Params.languageAltTitle | default (.Language.LanguageName | emojify) | default (.Lang | title) }}"
+                                aria-label="{{ .Language.LanguageName | default (.Lang | title) }}">{{ .Lang | upper }}</a>
+                            {{- end }}
+                        </li>
+                        {{- end}}
+                    </ul>
+                    {{- end }}
+                {{- end }}
+            </div>
+        </div>
+        {{- $currentPage := . }}
+        {{- $page_url:= $currentPage.RelPermalink }}
+        {{- $overflow_label := i18n "menu_more_options" }}
+        {{- $menu_label := i18n "menu_open" }}
+        <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="{{ $menu_label }}" title="{{ $menu_label }}">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul id="menu">
+            {{- range site.Menus.main }}
+            {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | relLangURL }}
+            {{- $is_search := eq (site.GetPage .KeyName).Layout `search` }}
+            {{- $is_active := or (eq $menu_item_url $page_url) (and (ne $menu_item_url "/") (hasPrefix $page_url $menu_item_url)) }}
+            {{- $visible_children := slice }}
+            {{- if gt (len .Children) 0 }}
+                {{- range .Children }}
+                    {{- $section_name := strings.TrimPrefix "/" (strings.TrimSuffix "/" .URL) }}
+                    {{- $child_page := site.GetPage "section" $section_name }}
+                    {{- $child_visible := partial "section-visible.html" $child_page }}
+                    {{- if $child_visible }}
+                        {{- $visible_children = $visible_children | append . }}
+                    {{- end }}
+                {{- end }}
+            {{- end }}
+            {{- $has_children := gt (len $visible_children) 0 }}
+            {{- $has_active_child := false }}
+            {{- if $has_children }}
+                {{- range $visible_children }}
+                    {{- $child_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | relLangURL }}
+                    {{- if or (eq $child_url $page_url) (and (ne $child_url "/") (hasPrefix $page_url $child_url)) }}
+                        {{- $has_active_child = true }}
+                    {{- end }}
+                {{- end }}
+            {{- end }}
+            {{- $self_visible := true }}
+            {{- if eq (len .Children) 0 }}
+                {{- $own_section := strings.TrimPrefix "/" (strings.TrimSuffix "/" .URL) }}
+                {{- $self_visible = partial "section-visible.html" (site.GetPage "section" $own_section) }}
+            {{- end }}
+            {{- if or (and (eq (len .Children) 0) $self_visible) $has_children }}
+            <li{{ if $has_children }} class="menu-dropdown"{{ end }}>
+                {{- if $has_children }}
+                <details>
+                    <summary title="{{ .Title | default .Name }}">
+                        <span {{- if or $is_active $has_active_child }} class="active" {{- end }}>
+                            {{- .Pre }}
+                            {{- .Name -}}
+                            {{ .Post -}}
+                        </span>
+                        <svg class="submenu-caret" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                    </summary>
+                    <ul class="submenu">
+                        {{- range $visible_children }}
+                        {{- $child_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | relLangURL }}
+                        {{- $child_active := or (eq $child_url $page_url) (and (ne $child_url "/") (hasPrefix $page_url $child_url)) }}
+                        <li>
+                            <a href="{{ .URL | relLangURL }}" title="{{ .Title | default .Name }}">
+                                <span {{- if $child_active }} class="active" {{- end }}>
+                                    {{- .Pre }}
+                                    {{- .Name -}}
+                                    {{ .Post -}}
+                                </span>
+                            </a>
+                        </li>
+                        {{- end }}
+                    </ul>
+                </details>
+                {{- else }}
+                <a href="{{ .URL | relLangURL }}" title="{{ .Title | default .Name }} {{- cond $is_search (" (Alt + /)" | safeHTMLAttr) ("" | safeHTMLAttr ) }}"
+                {{- cond $is_search (" accesskey=/" | safeHTMLAttr) ("" | safeHTMLAttr ) }}>
+                    <span {{- if $is_active }} class="active" {{- end }}>
+                        {{- .Pre }}
+                        {{- .Name -}}
+                        {{ .Post -}}
+                    </span>
+                    {{- if (findRE "://" .URL) }}&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                    {{- end }}
+                </a>
+                {{- end }}
+            </li>
+            {{- end }}
+            {{- end }}
+            <li class="menu-dropdown menu-overflow" hidden>
+                <details>
+                    <summary title="{{ $overflow_label }}" aria-label="{{ $overflow_label }}">
+                        <span class="menu-overflow-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+                                <circle cx="12" cy="5" r="1.9" />
+                                <circle cx="12" cy="12" r="1.9" />
+                                <circle cx="12" cy="19" r="1.9" />
+                            </svg>
+                        </span>
+                    </summary>
+                    <ul class="submenu overflow-menu-list"></ul>
+                </details>
+            </li>
+        </ul>
+    </nav>
+</header>
+<script>
+    (() => {
+        const menu = document.getElementById('menu');
+        const menuToggle = document.getElementById('menu-toggle');
+        const overflowItem = menu?.querySelector('.menu-overflow');
+        const overflowDetails = overflowItem?.querySelector('details');
+        const overflowList = overflowItem?.querySelector('.overflow-menu-list');
+        const primaryItems = menu
+            ? Array.from(menu.children).filter((item) => !item.classList.contains('menu-overflow'))
+            : [];
+        const dropdowns = menu ? menu.querySelectorAll('.menu-dropdown details') : [];
+        const desktopHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+        const mobileMenu = window.matchMedia('(max-width: 768px)');
+        const closeTimers = new WeakMap();
+
+        if (!menu || !menuToggle || !overflowItem || !overflowList) {
+            return;
+        }
+
+        menu.classList.add('menu-overflow-enabled');
+
+        primaryItems.forEach((item, index) => {
+            item.dataset.menuOrder = String(index);
+        });
+
+        const clearCloseTimer = (dropdown) => {
+            const timer = closeTimers.get(dropdown);
+            if (timer) {
+                window.clearTimeout(timer);
+                closeTimers.delete(dropdown);
+            }
+        };
+
+        const closeDropdown = (dropdown) => {
+            clearCloseTimer(dropdown);
+            dropdown.removeAttribute('open');
+        };
+
+        const openDropdown = (dropdown) => {
+            clearCloseTimer(dropdown);
+            dropdown.setAttribute('open', 'open');
+        };
+
+        const scheduleClose = (dropdown) => {
+            clearCloseTimer(dropdown);
+            const timer = window.setTimeout(() => {
+                dropdown.removeAttribute('open');
+                closeTimers.delete(dropdown);
+            }, 180);
+            closeTimers.set(dropdown, timer);
+        };
+
+        const restorePrimaryItems = () => {
+            primaryItems.forEach((item) => {
+                if (item.parentElement !== menu) {
+                    menu.insertBefore(item, overflowItem);
+                }
+            });
+        };
+
+        const setMenuExpanded = (expanded) => {
+            menu.dataset.expanded = expanded ? 'true' : 'false';
+            menuToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            menuToggle.classList.toggle('is-open', expanded);
+        };
+
+        const closeMenu = () => {
+            setMenuExpanded(false);
+        };
+
+        const closeAllDropdowns = () => {
+            dropdowns.forEach((dropdown) => {
+                closeDropdown(dropdown);
+            });
+        };
+
+        const allowHoverDropdowns = () => desktopHover.matches && !mobileMenu.matches;
+
+        const rebalanceOverflowMenu = () => {
+            restorePrimaryItems();
+            overflowItem.hidden = true;
+            closeDropdown(overflowDetails);
+
+             if (mobileMenu.matches) {
+                menu.classList.remove('menu-overflow-active');
+                return;
+            }
+
+            if (menu.scrollWidth <= menu.clientWidth) {
+                menu.classList.remove('menu-overflow-active');
+                return;
+            }
+
+            overflowItem.hidden = false;
+            menu.classList.add('menu-overflow-active');
+
+            while (menu.scrollWidth > menu.clientWidth && primaryItems.some((item) => item.parentElement === menu)) {
+                const lastVisibleItem = Array.from(menu.children)
+                    .filter((item) => item !== overflowItem)
+                    .pop();
+
+                if (!lastVisibleItem) {
+                    break;
+                }
+
+                overflowList.insertBefore(lastVisibleItem, overflowList.firstChild);
+            }
+
+            if (overflowList.children.length === 0) {
+                overflowItem.hidden = true;
+                menu.classList.remove('menu-overflow-active');
+            }
+        };
+
+        const bindHoverBehavior = () => {
+            dropdowns.forEach((dropdown) => {
+                const container = dropdown.closest('.menu-dropdown');
+
+                if (!container || container.dataset.hoverBound === 'true') {
+                    return;
+                }
+
+                container.dataset.hoverBound = 'true';
+
+                container.addEventListener('mouseenter', () => {
+                    if (!allowHoverDropdowns()) {
+                        return;
+                    }
+
+                    openDropdown(dropdown);
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    if (!allowHoverDropdowns()) {
+                        return;
+                    }
+
+                    scheduleClose(dropdown);
+                });
+            });
+        };
+
+        bindHoverBehavior();
+        rebalanceOverflowMenu();
+        setMenuExpanded(false);
+        let wasMobileMenu = mobileMenu.matches;
+
+        let resizeFrame = null;
+        const scheduleRebalance = () => {
+            if (resizeFrame !== null) {
+                window.cancelAnimationFrame(resizeFrame);
+            }
+
+            resizeFrame = window.requestAnimationFrame(() => {
+                resizeFrame = null;
+                const isMobileMenu = mobileMenu.matches;
+                rebalanceOverflowMenu();
+
+                if (!isMobileMenu) {
+                    closeMenu();
+                } else if (!wasMobileMenu && isMobileMenu) {
+                    closeAllDropdowns();
+                }
+
+                wasMobileMenu = isMobileMenu;
+            });
+        };
+
+        window.addEventListener('resize', scheduleRebalance);
+        window.addEventListener('load', scheduleRebalance);
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(scheduleRebalance).catch(() => {});
+        }
+
+        if (typeof ResizeObserver !== 'undefined') {
+            const resizeObserver = new ResizeObserver(() => {
+                scheduleRebalance();
+            });
+
+            resizeObserver.observe(menu);
+            const nav = menu.closest('.nav');
+            if (nav) {
+                resizeObserver.observe(nav);
+            }
+        }
+
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            setMenuExpanded(!isExpanded);
+        });
+
+        menu.addEventListener('click', (event) => {
+            const clickedLink = event.target.closest('a');
+
+            if (clickedLink && mobileMenu.matches) {
+                closeMenu();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (mobileMenu.matches && !menu.contains(event.target) && !menuToggle.contains(event.target)) {
+                closeMenu();
+            }
+
+            dropdowns.forEach((dropdown) => {
+                if (!dropdown.contains(event.target)) {
+                    closeDropdown(dropdown);
+                }
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') {
+                return;
+            }
+
+            closeMenu();
+            closeAllDropdowns();
+        });
+    })();
+</script>

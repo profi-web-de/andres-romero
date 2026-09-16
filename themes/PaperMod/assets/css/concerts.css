@@ -1,0 +1,96 @@
+/* Concert Schedule Styles */
+
+/* Buttons - Adaptive to light/dark modes */
+.concert-actions a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary);
+  color: var(--theme);
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  margin-right: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.concert-actions a:hover {
+  opacity: 0.9;
+}
+
+/* Dark mode button styling */
+[data-theme="dark"] .concert-actions a {
+  background-color: var(--primary);
+  color: var(--theme);
+}
+
+[data-theme="dark"] .concert-actions a:hover {
+  background-color: var(--primary-dark);
+  opacity: 1;
+}
+
+/* Light mode button styling */
+[data-theme="light"] .concert-actions a {
+  background-color: var(--primary);
+  color: white;
+}
+
+[data-theme="light"] .concert-actions a:hover {
+  opacity: 0.85;
+}
+
+/* Concert detail page button styling */
+.concert-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.concert-actions a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.concert-actions a:hover {
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .concert-actions a {
+  color: var(--theme);
+}
+
+/* Concert contact info styling */
+.concert-contact {
+  background-color: var(--code-bg);
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+}
+
+.concert-contact p {
+  margin: 0.5rem 0;
+  color: var(--content);
+}
+
+.concert-contact-label {
+  font-weight: 600;
+  color: var(--title);
+}
+
+.concert-contact a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.concert-contact a:hover {
+  text-decoration: underline;
+}

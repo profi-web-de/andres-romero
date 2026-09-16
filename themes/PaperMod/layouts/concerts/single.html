@@ -1,0 +1,176 @@
+{{- define "main" }}
+{{- if partial "section-visible.html" .CurrentSection }}
+<article class="post-single">
+  <header class="post-header">
+    {{- partial "breadcrumbs.html" . }}
+    <p style="margin-bottom: 1rem;">
+      <a href="{{ "concerts/" | relLangURL }}" aria-label="{{ i18n "back_to_concerts" }}">&larr; {{ i18n "back_to_concerts" }}</a>
+    </p>
+    <h1 class="post-title">
+      {{ .Title }}
+    </h1>
+  </header>
+
+  <div class="post-content">
+    {{- $styles := resources.Get "css/concerts.css" }}
+    {{ if $styles }}
+    {{ $styles = $styles | minify }}
+    <style>{{ $styles.Content | safeCSS }}</style>
+    {{ end }}
+    <style>
+      .concert-single-details {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.5rem 1rem;
+        margin-bottom: 2.5rem;
+        padding: 1rem;
+        background-color: var(--code-bg);
+        border-radius: 5px;
+      }
+
+      .concert-single-details dt {
+        font-weight: 600;
+        color: var(--title);
+      }
+
+      .concert-single-details dd {
+        margin: 0;
+        color: var(--content);
+      }
+
+      .concert-date-large {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .concert-flyer {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 1.5rem;
+      }
+
+      .concert-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .concert-actions a {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
+
+      .concert-actions a:hover {
+        opacity: 0.85;
+      }
+
+      [data-theme="dark"] .concert-actions a {
+        color: var(--content);
+        background-color: var(--code-bg);
+        border: 1px solid var(--primary);
+      }
+
+      [data-theme="dark"] .concert-actions a:hover {
+        opacity: 1;
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .concert-contact {
+        background-color: var(--code-bg);
+        padding: 1rem;
+        border-radius: 5px;
+        margin-bottom: 1.5rem;
+      }
+
+      .concert-contact p {
+        margin: 0.5rem 0;
+      }
+
+      .concert-contact-label {
+        font-weight: 600;
+        color: var(--title);
+      }
+
+      .concert-contact a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .concert-contact a:hover {
+        text-decoration: underline;
+      }
+    </style>
+
+    {{- if .Params.flyer }}
+    {{ partial "responsive-image.html" (dict
+        "src" .Params.flyer
+        "alt" (printf "%s Flyer" .Title)
+        "class" "concert-flyer"
+        "sizes" "(max-width: 900px) 100vw, 700px"
+        "widths" (slice 480 768 1024 1400)) }}
+    {{- end }}
+
+    <div class="concert-date-large">{{ .Date.Format "Monday, January 2, 2006 at 15:04" }}</div>
+
+    <dl class="concert-single-details">
+      {{- with .Params.city }}
+      <dt>{{ i18n "city" }}:</dt>
+      <dd>{{ . }}</dd>
+      {{- end }}
+      {{- with .Params.venue }}
+      <dt>{{ i18n "venue" }}:</dt>
+      <dd>{{ . }}</dd>
+      {{- end }}
+      {{- with .Params.repertoire }}
+      <dt>{{ i18n "repertoire" }}:</dt>
+      <dd>{{ . }}</dd>
+      {{- end }}
+    </dl>
+
+    {{- if or .Params.ticket_link (and .Params.contact (or .Params.contact.email .Params.contact.phone)) }}
+    <div class="concert-actions">
+      {{- with .Params.ticket_link }}
+      <a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ i18n "buy_tickets" }}</a>
+      {{- end }}
+    </div>
+    {{- end }}
+
+    {{- if and .Params.contact (or .Params.contact.email .Params.contact.phone) }}
+    <div class="concert-contact">
+      <p class="concert-contact-label">{{ i18n "contact_info" }}</p>
+      {{- with .Params.contact.email }}
+      <p><strong>{{ i18n "email" }}:</strong> <a href="mailto:{{ . }}">{{ . }}</a></p>
+      {{- end }}
+      {{- with .Params.contact.phone }}
+      <p><strong>{{ i18n "phone" }}:</strong> <a href="tel:{{ . }}">{{ . }}</a></p>
+      {{- end }}
+    </div>
+    {{- end }}
+
+    {{- if .Content }}
+    <div class="post-content">
+      {{ .Content }}
+    </div>
+    {{- end }}
+  </div>
+
+  <footer class="post-footer">
+    {{- if (eq (.Param "ShowPostNavLinks") true) | and (gt .Site.Params.MainSections 0) }}
+    {{- partial "post_nav_links.html" . }}
+    {{- end }}
+  </footer>
+</article>
+{{- end }}{{/* section-visible */}}
+{{- end }}

@@ -1,0 +1,7 @@
+# Pendiente: email de destino del formulario de booking. Mientras esté vacío,
+# el layout de contacto muestra un aviso en lugar del formulario.
+booking_email: ""
+social_links:
+  facebook: https://www.facebook.com/AndresRomeroEG
+  instagram: https://www.instagram.com/pipe466/
+  youtube: https://www.youtube.com/@AndresRomeroG

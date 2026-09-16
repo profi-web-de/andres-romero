@@ -1,0 +1,120 @@
+{{- define "main" }}
+<article class="post-single">
+  <header class="post-header">
+    {{- partial "breadcrumbs.html" . }}
+    <h1 class="post-title">{{ .Title }}</h1>
+  </header>
+
+  <div class="post-content contact-booking-wrap">
+    {{- $styles := resources.Get "css/contact.css" }}
+    {{- if $styles }}
+      {{- $styles = $styles | minify }}
+      <style>{{ $styles.Content | safeCSS }}</style>
+    {{- end }}
+
+    {{- if .Content }}
+      {{ .Content }}
+    {{- end }}
+
+    <p class="contact-booking-intro">{{ i18n "contact_form_intro" }}</p>
+
+    {{- $bookingEmail := hugo.Data.site_settings.booking_email | default "" }}
+    {{- if $bookingEmail }}
+      {{- $submitEndpoint := printf "https://formsubmit.co/%s" $bookingEmail }}
+      {{- $submitAjaxEndpoint := printf "https://formsubmit.co/ajax/%s" $bookingEmail }}
+      <form class="contact-booking-form" action="{{ $submitEndpoint }}" method="POST" data-ajax-action="{{ $submitAjaxEndpoint }}">
+        <input type="hidden" name="_subject" value="New booking/contact message from website">
+        <input type="hidden" name="_template" value="table">
+
+        <label class="contact-booking-honeypot" for="website" aria-hidden="true">
+          {{ i18n "contact_form_website" }}
+          <input id="website" name="_honey" type="text" tabindex="-1" autocomplete="off">
+        </label>
+
+        <label for="name">
+          {{ i18n "contact_form_name" }}
+          <input id="name" name="name" type="text" required>
+        </label>
+
+        <label for="phone">
+          {{ i18n "contact_form_phone" }}
+          <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" pattern="[0-9+()\-\s]{6,}" oninput="this.value=this.value.replace(/[^0-9+()\-\s]/g,'')" required>
+        </label>
+
+        <label for="message">
+          {{ i18n "contact_form_message" }}
+          <textarea id="message" name="message" rows="6" required></textarea>
+        </label>
+
+        <button class="contact-booking-submit" type="submit">
+          {{ i18n "contact_form_submit" }}
+        </button>
+
+        <p class="contact-booking-status" data-idle-label="{{ i18n "contact_form_submit" }}" data-sending-label="{{ i18n "contact_form_sending" }}" data-success-message="{{ i18n "contact_form_success" }}" data-error-message="{{ i18n "contact_form_error" }}" aria-live="polite"></p>
+      </form>
+      <script>
+        (function () {
+          var form = document.querySelector('.contact-booking-form[data-ajax-action]');
+          if (!form) return;
+
+          var submitButton = form.querySelector('.contact-booking-submit');
+          var status = form.querySelector('.contact-booking-status');
+          var ajaxAction = form.getAttribute('data-ajax-action');
+
+          form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (!form.reportValidity()) {
+              return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = status.dataset.sendingLabel;
+            status.className = 'contact-booking-status is-visible is-pending';
+            status.textContent = status.dataset.sendingLabel;
+
+            fetch(ajaxAction, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json'
+              },
+              body: new FormData(form)
+            })
+              .then(function (response) {
+                if (!response.ok) {
+                  throw new Error('Request failed');
+                }
+
+                return response.json();
+              })
+              .then(function () {
+                form.reset();
+                status.className = 'contact-booking-status is-visible is-success';
+                status.textContent = status.dataset.successMessage;
+
+                if (window.paperModAnalytics) {
+                  window.paperModAnalytics.track('contact_form_submit_success', {
+                    form_name: 'contact_booking',
+                    page_language: '{{ site.Language.Lang }}'
+                  });
+                }
+              })
+              .catch(function () {
+                status.className = 'contact-booking-status is-visible is-error';
+                status.textContent = status.dataset.errorMessage;
+              })
+              .finally(function () {
+                submitButton.disabled = false;
+                submitButton.textContent = status.dataset.idleLabel;
+              });
+          });
+        })();
+      </script>
+    {{- else }}
+      <div class="contact-booking-warning">
+        {{ i18n "contact_form_missing_email" }}
+      </div>
+    {{- end }}
+  </div>
+</article>
+{{- end }}
