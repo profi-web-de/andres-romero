@@ -1089,3 +1089,12 @@
   min-height: 0;
   justify-content: flex-start;
 }
+
+/* El parrafo de la tarjeta iba anclado al fondo con margin-top:auto. Eso
+   funcionaba cuando las tarjetas eran cajas con alto minimo fijo: el texto se
+   alineaba contra el borde inferior. Aqui son abiertas y de alto libre, asi que
+   anclarlo abajo hace que cada columna arranque a distinta altura segun cuantas
+   lineas ocupe. Arranca justo debajo del titulo, y las tres se alinean. */
+.home-brief p {
+  margin-top: 0.55rem;
+}
