@@ -385,3 +385,33 @@
 .lang-switch a:hover {
   color: var(--accent);
 }
+
+/* --- Guitarra del selector de idioma -------------------------------------
+   El idioma activo lo marca una guitarra cuyo mastil apunta al codigo. Es el
+   unico adorno figurativo del sitio, asi que va pequena y en el acento: de
+   lejos se lee como una viñeta de color, de cerca se reconoce.
+
+   El agujero de la boca se recorta con una mascara y no pintandolo del color
+   de fondo, para que funcione sobre cualquier superficie. */
+.lang-switch__current {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lang-guitar {
+  width: 2.1rem;
+  height: auto;
+  flex: none;
+  color: var(--accent);
+  /* Medio pixel abajo: el cuerpo de la guitarra es un circulo y, alineado al
+     centro geometrico, se ve alto respecto a las mayusculas de al lado. */
+  transform: translateY(0.5px);
+}
+
+@media (max-width: 480px) {
+  /* En movil la cabecera va justa de ancho y el codigo del idioma basta. */
+  .lang-guitar {
+    display: none;
+  }
+}

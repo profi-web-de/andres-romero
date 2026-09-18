@@ -69,7 +69,30 @@
                         {{- range . -}}
                         <li>
                             {{- if eq $lang .Lang }}
-                            <span class="lang-switch__current" aria-current="true" title="{{ .Language.LanguageName | default (.Lang | title) }}">{{ .Lang | upper }}</span>
+                            {{- /* La guitarra marca el idioma activo: el mastil apunta al
+                                   codigo. Es decorativa, asi que va aria-hidden; quien no la
+                                   ve se entera por aria-current y por el title. */ -}}
+                            <span class="lang-switch__current" aria-current="true" title="{{ .Language.LanguageName | default (.Lang | title) }}">
+                                <svg class="lang-guitar" viewBox="0 0 76 28" aria-hidden="true" focusable="false">
+                                    <mask id="lang-guitar-soundhole">
+                                        <rect width="76" height="28" fill="#fff"></rect>
+                                        <circle cx="31" cy="14" r="2.2" fill="#000"></circle>
+                                    </mask>
+                                    <g fill="currentColor" mask="url(#lang-guitar-soundhole)">
+                                        <!-- Proporciones: el bombo inferior manda, el superior es
+                                             claramente menor, y entre los dos hay una cintura
+                                             estrecha. Cuerpo y mastil ocupan mas o menos la mitad
+                                             cada uno; con el mastil corto la silueta se leia como
+                                             una llave. -->
+                                        <ellipse cx="12" cy="14" rx="11.5" ry="11.5"></ellipse>
+                                        <rect x="20.5" y="10.5" width="8" height="7" rx="2.5"></rect>
+                                        <ellipse cx="31" cy="14" rx="7.5" ry="8.5"></ellipse>
+                                        <rect x="38" y="12.6" width="27" height="2.8" rx="1"></rect>
+                                        <rect x="64" y="9.8" width="11" height="8.4" rx="2.6"></rect>
+                                    </g>
+                                </svg>
+                                <span class="lang-switch__code">{{ .Lang | upper }}</span>
+                            </span>
                             {{- else }}
                             <a href="{{- .RelPermalink -}}" title="{{ .Language.Params.languageAltTitle | default (.Language.LanguageName | emojify) | default (.Lang | title) }}"
                                 aria-label="{{ .Language.LanguageName | default (.Lang | title) }}">{{ .Lang | upper }}</a>
