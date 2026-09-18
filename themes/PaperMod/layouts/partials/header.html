@@ -69,11 +69,11 @@
                         {{- range . -}}
                         <li>
                             {{- if eq $lang .Lang }}
-                            {{- /* La guitarra marca el idioma activo: el mastil apunta al
-                                   codigo. Es decorativa, asi que va aria-hidden; quien no la
-                                   ve se entera por aria-current y por el title. */ -}}
+                            {{- /* La guitarra marca el idioma activo: va detras del codigo,
+                                   como marca de agua. Es decorativa, asi que va aria-hidden;
+                                   quien no la ve se entera por aria-current y por el title. */ -}}
                             <span class="lang-switch__current" aria-current="true" title="{{ .Language.LanguageName | default (.Lang | title) }}">
-                                <svg class="lang-guitar" viewBox="0 0 76 28" aria-hidden="true" focusable="false">
+                                <svg class="lang-guitar" viewBox="0 0 76 28" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
                                     <mask id="lang-guitar-soundhole">
                                         <rect width="76" height="28" fill="#fff"></rect>
                                         <circle cx="31" cy="14" r="2.2" fill="#000"></circle>

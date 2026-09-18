@@ -387,31 +387,47 @@
 }
 
 /* --- Guitarra del selector de idioma -------------------------------------
-   El idioma activo lo marca una guitarra cuyo mastil apunta al codigo. Es el
-   unico adorno figurativo del sitio, asi que va pequena y en el acento: de
-   lejos se lee como una viñeta de color, de cerca se reconoce.
+   El idioma activo lleva una guitarra detras del codigo, como marca de agua.
 
-   El agujero de la boca se recorta con una mascara y no pintandolo del color
-   de fondo, para que funcione sobre cualquier superficie. */
+   Va en diagonal por una razon concreta: la guitarra es una silueta muy
+   alargada (76 x 28) y la caja de dos mayusculas es casi cuadrada. Metida en
+   horizontal, o se encoge hasta ser una mancha con un palo, o el mastil sale
+   disparado hasta chocar con el idioma siguiente. Girada, ocupa la caja de
+   esquina a esquina y ademas recuerda al cartel.
+
+   Opacidad baja: se reconoce, y las dos mayusculas encima se leen sin
+   esfuerzo. El agujero de la boca se recorta con una mascara y no pintandolo
+   del color de fondo, para que funcione sobre cualquier superficie. */
 .lang-switch__current {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: center;
+  padding: 0.2rem 0.62rem;
 }
 
 .lang-guitar {
-  width: 2.1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.25rem;
   height: auto;
-  flex: none;
   color: var(--accent);
-  /* Medio pixel abajo: el cuerpo de la guitarra es un circulo y, alineado al
-     centro geometrico, se ve alto respecto a las mayusculas de al lado. */
-  transform: translateY(0.5px);
+  opacity: 0.2;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-30deg);
+}
+
+.lang-switch__code {
+  position: relative;
 }
 
 @media (max-width: 480px) {
-  /* En movil la cabecera va justa de ancho y el codigo del idioma basta. */
+  /* En movil la cabecera va justa y el codigo del idioma basta. */
   .lang-guitar {
     display: none;
+  }
+  .lang-switch__current {
+    padding-inline: 0;
   }
 }
