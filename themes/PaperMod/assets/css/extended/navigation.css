@@ -344,15 +344,15 @@
         transition: none;
     }
 }
-/* Selector de idioma: los dos códigos visibles, el activo marcado y una
-   separación real respecto al interruptor de tema. */
+/* Selector de idioma: los códigos visibles y el activo marcado. */
 .lang-switch {
   display: flex;
   align-items: center;
   gap: 0.1rem;
-  margin-inline-start: 0.9rem;
-  padding-inline-start: 0.9rem;
-  border-inline-start: 1px solid var(--border);
+  /* Sin filete vertical: separaba el nombre de los idiomas con una linea que
+     no separa nada mas en todo el sitio. El aire basta, y ademas el filete
+     venia de cuando al lado habia tambien un interruptor de tema. */
+  margin-inline-start: 1.6rem;
   list-style: none;
 }
 
