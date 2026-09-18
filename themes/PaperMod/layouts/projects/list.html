@@ -1,0 +1,87 @@
+{{ define "main" }}
+{{- /*
+  Listado de proyectos: las bandas y formaciones en las que toca el músico.
+
+  Mismo patrón que las galerías: los proyectos NO son una carpeta de páginas,
+  son una lista en el front matter del _index de la sección (gallery_projects).
+  Así el CMS los reordena arrastrando y se ocultan sin borrarlos.
+
+  Diferencia con images/list.html: aquí no hay lightbox. Una foto de banda no
+  se amplía, se pulsa para ir a donde vive esa banda — por eso la tarjeta
+  entera es un enlace cuando el proyecto define 'link', y texto plano cuando no.
+*/ -}}
+{{- $styles := resources.Get "css/projects.css" -}}
+{{- if $styles -}}
+{{- $styles = $styles | minify -}}
+<style>{{ $styles.Content | safeCSS }}</style>
+{{- end -}}
+{{- if partial "section-visible.html" . }}
+
+{{- if not .IsHome | and .Title }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- if .Params.subtitle }}
+  <p class="post-subtitle">{{ .Params.subtitle }}</p>
+  {{- end }}
+  {{- if .Description }}
+  <div class="post-description">{{ .Description | markdownify }}</div>
+  {{- end }}
+</header>
+{{- end }}
+
+{{- if .Content }}
+<div class="post-content">
+  {{- if not (.Param "disableAnchoredHeadings") }}
+  {{- partial "anchored_headings.html" .Content -}}
+  {{- else }}{{ .Content }}{{ end }}
+</div>
+{{- end }}
+
+{{- $projects := where (.Params.gallery_projects | default (slice)) "enabled" "!=" false -}}
+
+{{- if gt (len $projects) 0 }}
+<section class="project-grid">
+  {{- range $index, $item := $projects }}
+  {{- $title := $item.title | default "" -}}
+  {{- $description := $item.description | default "" -}}
+  {{- $alt := $item.alt | default $title -}}
+  {{- $link := $item.link | default "" -}}
+  {{- $external := and $link (hasPrefix $link "http") -}}
+  <article class="project-card{{ if $link }} project-card--linked{{ end }}">
+    {{- with $item.image }}
+    <div class="project-card__media">
+      {{ partial "responsive-image.html" (dict
+          "src" .
+          "alt" $alt
+          "sizes" "(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+          "widths" (slice 400 600 900 1200)
+          "loading" (cond (lt $index 3) "eager" "lazy")) }}
+    </div>
+    {{- end }}
+    <div class="project-card__body">
+      <h2 class="project-card__title">
+        {{- if $link }}
+        <a href="{{ $link }}"{{ if $external }} target="_blank" rel="noopener noreferrer"{{ end }}
+           data-analytics-event="select_content"
+           data-analytics-content-type="project"
+           data-analytics-item-id="{{ $title | urlize }}">{{ $title }}</a>
+        {{- else }}{{ $title }}{{ end }}
+      </h2>
+      {{- with $description }}
+      <p class="project-card__text">{{ . }}</p>
+      {{- end }}
+      {{- if $link }}
+      <span class="project-card__more" aria-hidden="true">{{ i18n "projects_more" }}</span>
+      {{- end }}
+    </div>
+  </article>
+  {{- end }}
+</section>
+{{- else }}
+<section class="media-empty-state">
+  <p>{{ i18n "projects_empty" }}</p>
+</section>
+{{- end }}
+{{- end }}
+{{ end }}

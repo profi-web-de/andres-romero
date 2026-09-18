@@ -137,7 +137,7 @@ collections:
                       widget: "string",
                       i18n: duplicate,
                       required: false,
-                      hint: "Section this card opens, without the language prefix: violin/, conducting/, teaching/. Leave empty and the card is plain text.",
+                      hint: "Section this card opens, without the language prefix: projects/, concerts/, teaching/. Leave empty and the card is plain text.",
                     }
       - label: "Featured Video"
         name: "home_video"
@@ -202,7 +202,7 @@ collections:
                 hint: "Short excerpts from reviews. Leave empty to hide the whole section."
                 fields:
                   - { label: "Quote", name: "quote", widget: "text", i18n: true }
-                  - { label: "Source", name: "source", widget: "string", i18n: true, hint: "Publication and date, e.g. 'Lübeckische Blätter, 2022'." }
+                  - { label: "Source", name: "source", widget: "string", i18n: true, hint: "Publication and date, e.g. 'Thüringer Allgemeine, 2026'." }
                   - { label: "Link (optional)", name: "url", widget: "string", i18n: duplicate, required: false }
       - label: "Closing Call to Action"
         name: "home_cta"
@@ -257,55 +257,12 @@ collections:
               i18n: true,
             }
           - { label: "Content", name: "body", widget: "markdown", i18n: true }
-      - label: "Violinist"
-        name: "violin"
-        file: "content/violin.{{locale}}.md"
-        i18n: true
-        fields:
-          - { label: "Title", name: "title", widget: "string", i18n: true }
-          - {
-              label: "Hide translation list",
-              name: "hideTranslationList",
-              widget: "hidden",
-              default: true,
-              i18n: duplicate,
-            }
-          - label: "Portrait (optional)"
-            name: "portrait"
-            widget: "object"
-            required: false
-            i18n: true
-            fields:
-              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Se muestra arriba de la página. Funciona mejor una foto apaisada." }
-              - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
-          - { label: "Content", name: "body", widget: "markdown", i18n: true }
-      - label: "Conductor"
-        name: "conducting"
-        file: "content/conducting.{{locale}}.md"
-        i18n: true
-        fields:
-          - { label: "Title", name: "title", widget: "string", i18n: true }
-          - {
-              label: "Hide translation list",
-              name: "hideTranslationList",
-              widget: "hidden",
-              default: true,
-              i18n: duplicate,
-            }
-          - label: "Portrait (optional)"
-            name: "portrait"
-            widget: "object"
-            required: false
-            i18n: true
-            fields:
-              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Se muestra arriba de la página. Funciona mejor una foto apaisada." }
-              - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
-          - { label: "Content", name: "body", widget: "markdown", i18n: true }
-      - label: "Teaching"
+      - label: "Lessons"
         name: "teaching"
         file: "content/teaching/_index.{{locale}}.md"
         i18n: true
         fields:
+          - { label: "Show Page in Menu", name: "show_page", widget: "boolean", default: true, i18n: duplicate }
           - { label: "Title", name: "title", widget: "string", i18n: true }
           - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
           - label: "Portrait (optional)"
@@ -314,77 +271,92 @@ collections:
             required: false
             i18n: true
             fields:
-              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Se muestra arriba de la página. Funciona mejor una foto apaisada." }
+              - { label: "Image", name: "image", widget: "image", required: false, i18n: duplicate, hint: "Shown at the top of the page. A landscape photo works best." }
               - { label: "Alt Text", name: "alt", widget: "string", required: false, i18n: true }
+          - label: "Lessons"
+            name: "lessons"
+            widget: "object"
+            i18n: true
+            fields:
+              - {
+                  label: "Description",
+                  name: "description",
+                  widget: "text",
+                  i18n: true,
+                  required: false,
+                  hint: "One or two paragraphs: what you teach, to whom, and how the lessons work.",
+                }
+              - label: "Key Points"
+                name: "points"
+                widget: "list"
+                i18n: true
+                required: false
+                hint: "Short lines shown as a list: styles, levels, languages, online or in person, price or 'on request'."
+                field: { label: "Point", name: "point", widget: "string", i18n: true }
           - { label: "Intro Content", name: "body", widget: "markdown", i18n: true, required: false }
-          - label: "Chair in Germany"
-            name: "germany_chair"
-            widget: "object"
+      - label: "Legal Notice (Impressum)"
+        name: "impressum"
+        file: "content/impressum.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Friendly URL (slug)", name: "slug", widget: "hidden", default: "impressum", i18n: duplicate }
+          - { label: "Hide translation list", name: "hideTranslationList", widget: "hidden", default: true, i18n: duplicate }
+          - {
+              label: "Content",
+              name: "body",
+              widget: "markdown",
+              i18n: true,
+              hint: "Required by German law: full name, postal address, contact, and who is responsible for the content.",
+            }
+      - label: "Privacy Policy"
+        name: "privacy"
+        file: "content/privacy.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Hide translation list", name: "hideTranslationList", widget: "hidden", default: true, i18n: duplicate }
+          - { label: "Content", name: "body", widget: "markdown", i18n: true }
+  - name: "projects"
+    label: "Projects (Bands)"
+    i18n: true
+    files:
+      - label: "Projects"
+        name: "projects"
+        file: "content/projects/_index.{{locale}}.md"
+        i18n: true
+        fields:
+          - { label: "Show Page in Menu", name: "show_page", widget: "boolean", default: true, i18n: duplicate }
+          - { label: "Title", name: "title", widget: "string", i18n: true }
+          - { label: "Subtitle", name: "subtitle", widget: "string", i18n: true, required: false }
+          - { label: "Intro Content", name: "body", widget: "markdown", i18n: true, required: false }
+          - label: "Projects"
+            name: "gallery_projects"
+            widget: "list"
             i18n: true
+            summary: "{{fields.title}}"
+            required: false
+            hint: "Reorder by dragging. Disable a project to hide it without deleting it."
             fields:
-              - { label: "University Name", name: "university_name", widget: "string", i18n: true }
-              - { label: "University URL", name: "university_url", widget: "string", required: false, i18n: duplicate }
-              - { label: "Appointment Title", name: "appointment_title", widget: "string", i18n: true }
-              - { label: "Description", name: "description", widget: "text", i18n: true }
-              - label: "Admissions Items"
-                name: "admissions"
-                widget: "list"
-                i18n: true
-                field: { label: "Admissions Item", name: "item", widget: "string", i18n: true }
-              - label: "Audition Items"
-                name: "auditions"
-                widget: "list"
-                i18n: true
-                field: { label: "Audition Item", name: "item", widget: "string", i18n: true }
-          - label: "Chair in Peru"
-            name: "peru_chair"
-            widget: "object"
-            i18n: true
-            fields:
-              - { label: "Institution Name", name: "institution_name", widget: "string", i18n: true }
-              - { label: "Institution URL", name: "institution_url", widget: "string", required: false, i18n: duplicate }
-              - { label: "Appointment Title", name: "appointment_title", widget: "string", i18n: true }
-              - { label: "Description", name: "description", widget: "text", i18n: true }
-              - label: "Initiatives"
-                name: "initiatives"
-                widget: "list"
-                i18n: true
-                field: { label: "Initiative", name: "item", widget: "string", i18n: true }
-          - label: "Masterclasses"
-            name: "masterclasses"
-            widget: "object"
-            i18n: true
-            fields:
+              - { label: "Show", name: "enabled", widget: "boolean", default: true, i18n: duplicate }
+              - {
+                  label: "Photo",
+                  name: "image",
+                  widget: "image",
+                  i18n: duplicate,
+                  hint: "Recommended: 1600 px or larger on the long side. Cropped to 4:5, so keep the group centred.",
+                }
+              - { label: "Name", name: "title", widget: "string", i18n: true }
               - { label: "Description", name: "description", widget: "text", i18n: true, required: false }
-              - label: "Events"
-                name: "events"
-                widget: "list"
-                i18n: true
-                required: false
-                fields:
-                  - { label: "Title", name: "title", widget: "string", i18n: true }
-                  - { label: "Date Label", name: "date", widget: "string", i18n: true, required: false }
-                  - { label: "Location", name: "location", widget: "string", i18n: true, required: false }
-                  - { label: "Details", name: "details", widget: "text", i18n: true, required: false }
-                  - { label: "Link", name: "link", widget: "string", i18n: duplicate, required: false }
-          - label: "Student Resources"
-            name: "resources"
-            widget: "object"
-            i18n: true
-            fields:
-              - { label: "Enabled", name: "enabled", widget: "boolean", default: true, i18n: duplicate }
-              - { label: "Private Area", name: "private_area", widget: "boolean", default: true, i18n: duplicate }
-              - { label: "Description", name: "description", widget: "text", i18n: true, required: false }
-              - { label: "Access Note", name: "access_note", widget: "string", i18n: true, required: false }
-              - label: "Resource Items"
-                name: "items"
-                widget: "list"
-                i18n: true
-                required: false
-                fields:
-                  - { label: "Title", name: "title", widget: "string", i18n: true }
-                  - { label: "Description", name: "description", widget: "text", i18n: true, required: false }
-                  - { label: "Link", name: "link", widget: "string", i18n: duplicate, required: false }
+              - { label: "Alt Text", name: "alt", widget: "string", i18n: true, required: false }
+              - {
+                  label: "Link (optional)",
+                  name: "link",
+                  widget: "string",
+                  i18n: duplicate,
+                  required: false,
+                  hint: "Full URL to the band's own page or profile. Leave empty and the card is plain text.",
+                }
   - name: "multimedia_resources"
     label: "Multimedia / Resources"
     i18n: true

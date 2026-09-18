@@ -880,44 +880,212 @@
   --band-card-shadow: 0 20px 56px rgba(63, 43, 18, 0.08);
 }
 
-/* Banda de tinta: casi negra en ambos temas, como el hero. El acento cambia a
-   su variante clara porque el granate oscuro no se lee sobre negro. */
+/* Banda de arena: el segundo tono del ritmo. Antes era casi negra; en un sitio
+   blanco eso partia la portada por la mitad. Ahora es un crema calido y el
+   contraste lo ponen las fotos, no el fondo.
+
+   El nombre de la clase sigue siendo --ink porque lo emite el layout y
+   renombrarlo obligaria a tocar la plantilla; lo que cambia es lo que pinta. */
 .home-band--ink {
-  background: var(--band-ink-surface);
-  color: var(--band-ink-fg);
+  background: var(--band-sand);
+  color: var(--primary);
 
-  --band-fg: var(--band-ink-fg);
-  --band-muted: rgba(246, 242, 234, 0.62);
-  --band-accent: var(--accent-on-dark);
-  --band-hairline: rgba(255, 255, 255, 0.12);
-  --band-card: rgba(255, 255, 255, 0.05);
-  --band-card-strong: rgba(255, 255, 255, 0.1);
-  --band-card-shadow: 0 22px 70px rgba(0, 0, 0, 0.3);
+  --band-fg: var(--primary);
+  --band-muted: var(--secondary);
+  --band-accent: var(--accent);
+  --band-hairline: var(--hairline-strong);
+  --band-card: #ffffff;
+  --band-card-strong: #ffffff;
+  --band-card-shadow: 0 18px 44px rgba(23, 19, 16, 0.07);
 }
 
-:root {
-  --band-ink-surface: #0c0c0d;
-  --band-ink-fg: #f6f2ea;
-}
-
-/* En oscuro la tinta se separa del fondo de pagina por poco: dos negros
-   distintos bastan para marcar el ritmo sin que la portada parpadee. */
-:root[data-theme="dark"] {
-  --band-ink-surface: #0e0f11;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --band-ink-surface: #0e0f11;
-  }
-}
-
-/* Los degradados decorativos del video son ropa de banda oscura. */
-.home-band--base .home-video__backdrop,
-.home-band--base .home-video__overlay {
+/* Los degradados decorativos del video eran ropa de banda oscura: con las dos
+   bandas claras no pintan nada en ninguna. */
+.home-video__backdrop,
+.home-video__overlay {
   display: none;
 }
 
-.home-band--base .home-video__embed {
+.home-video__embed {
   background: var(--tertiary);
+}
+
+/* ===========================================================================
+   DIRECCION "PICO" — la portada deja de ser una plancha negra
+
+   El hero heredado era negro a sangre con la foto fundida en degradado. En un
+   sitio blanco eso no es un ajuste de color: cambia la pieza. Aqui el fondo es
+   el de la pagina, el texto manda a la izquierda y la foto es un bloque de
+   bordes duros con un rectangulo turquesa desplazado detras — el recurso de
+   los carteles de pico, donde el color va en planos, no en degradados.
+
+   Este bloque va al final del archivo a proposito: sobrescribe por orden, sin
+   subir la especificidad de nada.
+   =========================================================================== */
+
+.home-hero {
+  min-height: 0;
+  border-radius: 0;
+  background: var(--theme);
+  color: var(--primary);
+  padding-block: clamp(26px, 4.5vw, 64px) clamp(30px, 5vw, 68px);
+  --hero-media-width: clamp(230px, 29vw, 420px);
+  --hero-media-right: clamp(26px, 4vw, 56px);
+}
+
+/* Los degradados existian para que el texto blanco se leyera sobre la foto.
+   Sin plancha negra no hay nada que rescatar. */
+.home-hero__backdrop,
+.home-hero__overlay,
+.home-hero__media::before {
+  display: none;
+}
+
+.home-hero__media {
+  opacity: 1;
+  border-radius: 0;
+}
+
+/* El bloque turquesa: mismo tamano que la foto, desplazado abajo y a la
+   derecha. Va en ::after y no en ::before porque ::before era el degradado y
+   apagarlo es mas claro que reciclarlo. */
+.home-hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 16px -16px -16px 16px;
+  background: var(--accent-2);
+  z-index: 0;
+}
+
+/* OJO: aqui no se toca el position de .home-hero__slide. Las diapositivas se
+   apilan en absoluto una sobre otra; ponerles position:relative las pone en
+   flujo, se descuelgan y asoma el fondo del contenedor. */
+.home-hero__slides {
+  position: relative;
+  z-index: 1;
+  border-radius: 0;
+  background: transparent;
+}
+
+.home-hero__slide img {
+  filter: none;
+  border-radius: 0;
+  object-position: center 30%;
+}
+
+/* La foto es un bloque de proporcion fija anclado arriba, no una columna que
+   estira hasta el fondo del hero: estirada dejaba una plancha negra debajo y
+   se comia las tarjetas. */
+.home-hero__media {
+  /* width/right/top van explicitos y no por variable: el bloque del hero a
+     sangre los fijaba directamente unas lineas mas arriba, y las variables no
+     llegaban a ganar. El margen derecho ademas es lo que deja ver el bloque
+     turquesa, que .home-hero recorta con overflow:hidden si la foto va pegada
+     al borde. */
+  top: var(--hero-pad);
+  right: clamp(26px, 4vw, 56px);
+  bottom: auto;
+  width: clamp(230px, 29vw, 400px);
+  height: auto;
+  aspect-ratio: 4 / 5;
+}
+
+/* El texto reserva su sitio: sin esto las tarjetas pasan por debajo de la foto. */
+@media (min-width: 761px) {
+  .home-hero__content {
+    padding-right: calc(var(--hero-media-width) + var(--hero-media-right) + clamp(20px, 3vw, 44px));
+  }
+}
+
+/* Mayusculas apretadas: es la firma de la direccion. El tamano baja un punto
+   respecto al hero oscuro porque Archivo Black pesa mucho mas que una serif. */
+.home-hero__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(2.4rem, 5.8vw, 4.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.015em;
+  color: var(--primary);
+}
+
+.home-hero__eyebrow {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.home-hero__subtitle {
+  color: var(--secondary);
+}
+
+/* Tarjetas del hero: el borde blanco translucido era para fondo oscuro. */
+.home-brief {
+  min-height: 0;
+  padding: 18px 0 0;
+  border: 0;
+  border-top: 2px solid var(--hairline-strong);
+  border-radius: 0;
+  background: transparent;
+}
+
+.home-brief h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  color: var(--primary);
+}
+
+.home-brief p {
+  color: var(--secondary);
+}
+
+.home-brief--linked:hover,
+.home-brief--linked:focus-within {
+  border-top-color: var(--accent);
+  background: transparent;
+}
+
+.home-brief--linked h2 a {
+  color: inherit;
+}
+
+.home-brief--linked:hover h2 a,
+.home-brief--linked:focus-within h2 a {
+  color: var(--accent);
+}
+
+/* El bloque de cierre es el unico plano grande de color del sitio: ahi el
+   bermellon es superficie, no tinta. */
+.home-cta {
+  background: var(--accent-surface);
+  color: var(--on-accent-surface);
+  border-radius: 0;
+}
+
+@media (max-width: 760px) {
+  /* En movil la foto deja de flotar a la derecha y pasa a ser una banda
+     completa debajo del texto; el bloque turquesa estorbaria. */
+  .home-hero__media {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    margin-top: 26px;
+    aspect-ratio: 4 / 3;
+  }
+
+  .home-hero__media::after {
+    display: none;
+  }
+}
+
+/* El hero heredaba min-height del alto de pantalla y repartia el sobrante con
+   space-between: sin plancha de fondo, ese sobrante se veia como un agujero
+   entre las tarjetas y la banda siguiente. */
+.home-hero__content {
+  min-height: 0;
+  justify-content: flex-start;
 }

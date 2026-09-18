@@ -5,11 +5,16 @@
 <style>{{ $styles.Content | safeCSS }}</style>
 {{- end }}
 
-{{- /* Docencia es la unica seccion cuyos datos vienen en campos estructurados
-       del CMS (catedras, clases magistrales, recursos) en lugar de prosa. Aun
-       asi se pinta con la misma envoltura que Biografia, Violinista y Director
-       -- post-single > post-header > retrato > post-content -- para que la
-       navegacion entre secciones no cambie de lenguaje visual. */ -}}
+{{- /* Clases particulares: descripcion en prosa y una lista de puntos cortos
+       (estilos, niveles, idiomas, presencial u online, precio). Se pinta con la
+       misma envoltura que Biografia -- post-single > post-header > retrato >
+       post-content -- para que la navegacion entre secciones no cambie de
+       lenguaje visual.
+
+       Los campos los escribe el CMS como lessons.description y lessons.points;
+       si el musico los deja vacios, la seccion no se pinta y queda solo la
+       cabecera. */ -}}
+{{- if partial "section-visible.html" . }}
 <article class="post-single teaching-page">
   <header class="post-header">
     {{- partial "breadcrumbs.html" . }}
@@ -35,112 +40,27 @@
   <div class="post-content">
     {{- with .Content }}{{ . }}{{ end }}
 
-    {{- /* --- Catedra en Alemania --- */ -}}
-    {{- with .Params.germany_chair }}
+    {{- with .Params.lessons }}
+    {{- $description := .description | default "" }}
+    {{- $points := .points | default (slice) }}
+    {{- if or $description (gt (len $points) 0) }}
     <section class="teaching-block">
-      <p class="teaching-eyebrow">{{ i18n "teaching_germany_chair" }}</p>
-      <h2>{{ .university_name }}</h2>
-      {{- with .appointment_title }}
-      <p class="teaching-kicker">{{ . }}</p>
+      {{- with $description }}
+      {{ . | markdownify }}
       {{- end }}
-      {{- with .description }}
-      <p>{{ . }}</p>
-      {{- end }}
-      {{- with .admissions }}
-      <h3>{{ i18n "teaching_admissions" }}</h3>
-      <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
-      {{- end }}
-      {{- with .auditions }}
-      <h3>{{ i18n "teaching_auditions" }}</h3>
-      <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
-      {{- end }}
-      {{- with .university_url }}
-      <p class="teaching-more"><a href="{{ . }}" target="_blank" rel="noreferrer">{{ i18n "teaching_institution_website" }}</a></p>
-      {{- end }}
-    </section>
-    {{- end }}
-
-    {{- /* --- Catedra en Peru --- */ -}}
-    {{- with .Params.peru_chair }}
-    <section class="teaching-block">
-      <p class="teaching-eyebrow">{{ i18n "teaching_peru_chair" }}</p>
-      <h2>{{ .institution_name }}</h2>
-      {{- with .appointment_title }}
-      <p class="teaching-kicker">{{ . }}</p>
-      {{- end }}
-      {{- with .description }}
-      <p>{{ . }}</p>
-      {{- end }}
-      {{- with .initiatives }}
-      <h3>{{ i18n "teaching_projects" }}</h3>
-      <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
-      {{- end }}
-      {{- with .institution_url }}
-      <p class="teaching-more"><a href="{{ . }}" target="_blank" rel="noreferrer">{{ i18n "teaching_institution_website" }}</a></p>
-      {{- end }}
-    </section>
-    {{- end }}
-
-    {{- /* --- Clases magistrales --- */ -}}
-    {{- with .Params.masterclasses }}
-    <section class="teaching-block">
-      <p class="teaching-eyebrow">{{ i18n "teaching_masterclasses" }}</p>
-      <h2>{{ i18n "teaching_calendar" }}</h2>
-      {{- with .description }}
-      <p>{{ . }}</p>
-      {{- end }}
-      {{- with .events }}
-      {{- range . }}
-      <div class="teaching-entry">
-        <h3>{{ .title }}</h3>
-        {{- $meta := slice }}
-        {{- with .date }}{{ $meta = $meta | append . }}{{ end }}
-        {{- with .location }}{{ $meta = $meta | append . }}{{ end }}
-        {{- with $meta }}
-        <p class="teaching-meta">{{ delimit . " · " }}</p>
+      {{- if gt (len $points) 0 }}
+      <ul class="teaching-points">
+        {{- range $points }}
+        <li>{{ . }}</li>
         {{- end }}
-        {{- with .details }}
-        <p>{{ . }}</p>
-        {{- end }}
-        {{- with .link }}
-        <p class="teaching-more"><a href="{{ . }}" target="_blank" rel="noreferrer">{{ i18n "more_info" }}</a></p>
-        {{- end }}
-      </div>
-      {{- end }}
-      {{- else }}
-      <p class="teaching-muted">{{ i18n "teaching_available_soon" }}</p>
-      {{- end }}
-    </section>
-    {{- end }}
-
-    {{- /* --- Recursos para estudiantes --- */ -}}
-    {{- with .Params.resources }}
-    {{- if .enabled }}
-    <section class="teaching-block">
-      <p class="teaching-eyebrow">{{ if .private_area }}{{ i18n "teaching_private_area" }}{{ else }}{{ i18n "teaching_resources" }}{{ end }}</p>
-      <h2>{{ i18n "teaching_resources" }}</h2>
-      {{- with .description }}
-      <p>{{ . }}</p>
-      {{- end }}
-      {{- with .items }}
-      {{- range . }}
-      <div class="teaching-entry">
-        <h3>{{ .title }}</h3>
-        {{- with .description }}
-        <p>{{ . }}</p>
-        {{- end }}
-        {{- with .link }}
-        <p class="teaching-more"><a href="{{ . }}" target="_blank" rel="noreferrer">{{ i18n "more_info" }}</a></p>
-        {{- end }}
-      </div>
-      {{- end }}
-      {{- end }}
-      {{- with .access_note }}
-      <p class="teaching-note">{{ . }}</p>
+      </ul>
       {{- end }}
     </section>
     {{- end }}
     {{- end }}
   </div>
+
+  {{- partial "post_canonical.html" . -}}
 </article>
+{{- end }}
 {{- end }}

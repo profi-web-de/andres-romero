@@ -77,6 +77,18 @@
         <div class="home-hero__briefs">
             {{- range $profile := first 3 $profiles }}
             {{- $link := $profile.link | default "" }}
+            {{- /* Una tarjeta que enlaza a una seccion apagada seria un callejon
+                   sin salida: la pagina destino no se renderiza. En vez de
+                   pedirle al musico que recuerde quitar el enlace cuando oculta
+                   una seccion, se aplica aqui la misma regla que usan el menu y
+                   el pie, y la tarjeta se queda en texto plano. */ -}}
+            {{- if $link }}
+              {{- $target := strings.TrimSuffix "/" (strings.TrimPrefix "/" $link) }}
+              {{- $targetPage := site.GetPage "section" $target }}
+              {{- if not (partial "section-visible.html" $targetPage) }}
+                {{- $link = "" }}
+              {{- end }}
+            {{- end }}
             <article class="home-brief{{ if $link }} home-brief--linked{{ end }}">
                 {{- /* El enlace va en el título, no envolviendo la tarjeta: así el
                        nombre accesible del enlace es el de la sección. El CSS lo

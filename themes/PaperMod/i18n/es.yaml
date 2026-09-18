@@ -104,17 +104,9 @@
 - id: contact_form_error
   translation: "No se pudo enviar el mensaje. Inténtalo de nuevo."
 
-- id: teaching_germany_chair
-  translation: "Cátedra en Alemania"
 
-- id: teaching_peru_chair
-  translation: "Cátedra en Perú"
 
-- id: teaching_masterclasses
-  translation: "Clases Magistrales"
 
-- id: teaching_resources
-  translation: "Recursos para Estudiantes"
 
 - id: teaching_admissions
   translation: "Admisión"
@@ -128,8 +120,6 @@
 - id: teaching_calendar
   translation: "Calendario"
 
-- id: teaching_private_area
-  translation: "Área privada"
 
 - id: teaching_institution_website
   translation: "Visitar institución"
@@ -243,3 +233,12 @@
 
 - id: instagram_empty
   translation: "Todavía no hay publicaciones sincronizadas."
+
+- id: projects_empty
+  translation: "Todavía no hay proyectos publicados."
+
+- id: projects_more
+  translation: "Ver más"
+
+- id: imprint_page_link
+  translation: "Aviso legal"

@@ -53,14 +53,17 @@ buildFuture = true
   # Fijado en claro: la identidad del sitio es el fondo, no una preferencia del
   # visitante. Si al final se elige la dirección oscura, esto pasa a 'dark'.
   defaultTheme = 'light'
+  # El blanco es la identidad del sitio, no una preferencia: sin interruptor.
+  disableThemeToggle = true
   ShowShareButtons = false
   ShowReadingTime = false
   images = ['og-default.jpg']
   [params.assets]
     favicon = 'favicon.svg'
-    # Placeholder: lo fija la dirección visual que elija Andrés (fase 3).
-    theme_color = '#111111'
-    msapplication_TileColor = '#111111'
+    # Bermellón de la dirección Picó. El mismo valor va en static/favicon.svg
+    # y en scripts/make-favicons.py.
+    theme_color = '#e0402a'
+    msapplication_TileColor = '#e0402a'
   copyright_name = 'Andrés Romero'
   [params.profileMode]
     enabled = true

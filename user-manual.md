@@ -1,220 +1,172 @@
-# Manual para cargar imágenes y videos
+# Manual de la web
 
-Este manual explica cómo agregar imágenes a la galería de imágenes y videos a la galería de videos desde el panel de administración del sitio.
+Guía para editar tu sitio sin tocar código. Todo se hace desde el panel, en el
+navegador.
 
-## Dónde se editan
+---
 
-- Galería de imágenes: `Multimedia / Resources` -> `Images Gallery`
-- Galería de videos: `Multimedia / Resources` -> `Videos Gallery`
+## Entrar al panel
 
-## Antes de empezar
+1. Abre **`/admin`** al final de la dirección de tu web.
+2. Pulsa **Entrar con GitHub** y acepta.
 
-- Ten listas las imágenes con buena resolución. No hace falta optimizarlas ni comprimirlas a mano: el sitio genera automáticamente versiones ligeras (WebP) para cada tamaño de pantalla.
-- Si vas a publicar un video, ten a mano el enlace de YouTube.
-- Revisa siempre los tres idiomas. El sitio está en alemán, español e inglés, así que el título, la descripción y los textos visibles deben actualizarse en las tres versiones.
+Si no puedes entrar, avísame: es un permiso, no algo que hayas roto.
 
-## Cómo agregar una imagen a la galería de imágenes
+---
 
-1. Entra a `/admin`.
-2. Abre `Multimedia / Resources`.
-3. Entra en `Images Gallery`.
-4. Edita una versión de idioma y luego las demás.
-5. Busca la lista `Gallery Images`.
-6. Haz clic en `Add Gallery Images` o en el botón para agregar un nuevo elemento.
-7. Completa los campos.
-8. Guarda o publica los cambios.
+## Lo primero que conviene saber
 
-### Campos de cada imagen
+**Tu web está en tres idiomas: alemán, español e inglés.** Arriba del formulario
+hay un selector de idioma. Lo que escribas en uno **no** se copia a los otros:
+cada idioma se rellena por separado.
 
-- `Show in Gallery`: si está activado, la imagen se muestra. Si lo desactivas, la imagen queda guardada pero oculta.
-- `Image`: sube o selecciona el archivo.
-- `Title`: título visible en la galería.
-- `Description`: texto breve opcional.
-- `Alt Text`: texto alternativo para accesibilidad y SEO.
+Las fotos, las fechas y los enlaces de YouTube sí son comunes a los tres. Solo
+se traducen los textos.
 
-### Recomendaciones para imágenes
+**Todo lo que guardas se publica.** No hay botón de «vista previa y luego
+publico»: al guardar, la web se actualiza sola en uno o dos minutos. Si algo
+sale mal, se puede deshacer.
 
-- Usa imágenes de al menos `1600 px` en el lado más largo.
-- No hace falta reducir el peso antes de subirlas: sube la mejor calidad que tengas y el sitio se encarga de generar las versiones optimizadas.
-- Si puedes, usa nombres de archivo claros y consistentes, por ejemplo `carlos-johnson-recital-berlin.jpg`.
-- Mantén el mismo orden en alemán y en español para que ambas galerías coincidan.
+---
 
-## Cómo agregar un video a la galería de videos
+## Qué puedes editar
 
-1. Entra a `/admin`.
-2. Abre `Multimedia / Resources`.
-3. Entra en `Videos Gallery`.
-4. Edita una versión de idioma y luego las demás.
-5. Busca la lista `Gallery Videos`.
-6. Agrega un nuevo elemento.
-7. Completa los campos.
-8. Guarda o publica los cambios.
+| En el panel | Qué cambia |
+|---|---|
+| **Site Settings** | Tu correo de contacto y tus redes sociales |
+| **Homepage** | La portada: foto grande, tarjetas, video destacado, citas de prensa, bloque de cierre |
+| **Pages** | Biografía, Clases, Aviso legal y Privacidad |
+| **Projects (Bands)** | Tus bandas y formaciones |
+| **Multimedia / Resources** | Galerías de imágenes, videos, audios e Instagram |
+| **Concert Schedule** | La agenda de conciertos |
 
-### Campos de cada video
+Los **menús** no se editan desde el panel. Si quieres cambiar el orden o el
+nombre de una sección, dímelo. Lo que sí puedes hacer tú es **ocultar** una
+sección entera con su interruptor.
 
-- `Show in Gallery`: controla si el video aparece o queda oculto.
-- `Title`: título del video.
-- `Publication Date`: fecha de publicación o de referencia.
-- `YouTube Video ID`: identificador del video en YouTube.
-- `Cover Image (optional)`: miniatura personalizada opcional.
-- `Description or Concert Notes`: descripción, programa, intérpretes o notas del concierto.
+---
 
-### Cómo obtener el `YouTube Video ID`
+## La portada
 
-No copies el enlace completo. Usa solo la parte final del enlace.
+### Foto grande (hero)
 
-Ejemplos:
+Es el carrusel de arriba. **Mínimo tres fotos.**
 
-- Si la URL es `https://www.youtube.com/watch?v=MGreSb1NjtA`, debes pegar `MGreSb1NjtA`.
-- Si la URL es `https://youtu.be/MGreSb1NjtA`, debes pegar `MGreSb1NjtA`.
+- **Verticales**, no apaisadas. Lo ideal es 1600 × 2400 px; el mínimo, 1200 × 1800.
+- Deja algo de aire alrededor: en móvil se recorta por los lados.
+- No hace falta que las optimices ni las reduzcas. Súbelas grandes y la web se
+  encarga de servirlas ligeras.
 
-### Sobre la portada del video
+El **eyebrow** es la línea pequeña de arriba, el **título** tu nombre y el
+**subtítulo** el párrafo de presentación (máximo 500 caracteres).
 
-- La portada es opcional.
-- Si subes una imagen en `Cover Image`, esa imagen se usa como miniatura en la galería.
-- Si no subes portada, la galería usa automáticamente la miniatura de YouTube.
+### Las tres tarjetas
 
-## Orden, edición y ocultación
+Debajo de la foto hay tres tarjetas cortas. Cada una puede enlazar a una sección
+(`projects/`, `concerts/`, `teaching/`) o quedarse como texto suelto.
 
-- En ambas galerías puedes reordenar los elementos desde la lista del CMS.
-- El orden de la lista es el orden en que aparecen en la página.
-- Si no quieres borrar un elemento, desactiva `Show in Gallery`.
+### Video destacado
 
-## Revisión antes de publicar
+Solo necesitas el **ID del video de YouTube**: en
+`youtube.com/watch?v=**hihE2W7XxPo**`, el ID es lo que va después de `v=`.
 
-Antes de cerrar el cambio, revisa esto:
+### Citas de prensa
 
-- La imagen o el video aparece en la galería correcta.
-- El texto está actualizado en alemán y en español.
-- El orden de los elementos es correcto.
-- El `Alt Text` de las imágenes está completo.
-- El `YouTube Video ID` funciona.
-- La portada del video se ve bien, si se agregó una.
+Cada cita lleva el texto, la publicación y un enlace opcional. **Si dejas la
+lista vacía, el bloque no aparece** y la portada se recoloca sola.
 
-## Anexo: guía rápida para imágenes del hero de inicio
+---
 
-Estas recomendaciones aplican al carrusel principal de la home.
+## Tus bandas
 
-- Tamaño ideal: `1600 x 2400 px`
-- Tamaño mínimo: `1200 x 1800 px`
-- Proporción recomendada: `2:3`
-- Mejor resultado: retratos verticales
-- Mantén el sujeto centrado o ligeramente a la derecha
-- Deja margen de seguridad para el recorte en tablet y móvil
-- Formato: `JPG` o `PNG` en buena calidad; el sitio genera solo las versiones `WebP` optimizadas
+En **Projects (Bands)**. Cada ficha tiene:
 
-Si solo sigues una regla, exporta cada imagen del hero en `1600 x 2400 px` y verifica que siga funcionando bien con recorte centrado.
+- **Foto** — se recorta a vertical (4:5), así que centra al grupo.
+- **Nombre** y **descripción** corta.
+- **Enlace opcional** — si la banda tiene web o perfil propio, la ficha entera
+  se vuelve pulsable. Si lo dejas vacío, queda como texto.
 
-## Citas de prensa en la portada
+Arrastra las fichas para cambiar el orden. El interruptor **Show** oculta una
+sin borrarla.
 
-La portada muestra un bloque de citas de crítica. Se edita en `/admin` -> `Homepage` -> `Press Quotes`.
+---
 
-- `Section Title`: el título del bloque, por ejemplo `Prensa`.
-- Cada cita tiene el texto (`Quote`), el medio (`Source`) y un enlace opcional (`Link`).
-- Escribe la cita **sin comillas**: el sitio las pone solas.
-- En `Source` conviene poner medio y año, por ejemplo `Lübeckische Blätter, 2022`.
-- Si borras todas las citas, el bloque entero desaparece de la portada.
+## Conciertos
 
-Recuerda revisar los tres idiomas.
+La agenda se divide sola en **próximos** y **pasados** comparando la fecha con
+el día de hoy. No tienes que mover nada: un concierto pasa a «pasados» solo.
 
-## Bloque de cierre de la portada
+La portada muestra los **tres próximos**.
 
-Debajo de todo hay un bloque en color con una invitación a escribir. Se edita en `Homepage` -> `Closing Call to Action`.
+> **La agenda viene apagada.** Enciéndela en *Concert Schedule Settings* cuando
+> tengas fechas confirmadas. Una agenda con una sola fecha y dos vencidas se ve
+> peor que no tener agenda.
 
-- `Title`: la pregunta o frase principal.
-- `Text`: una línea de contexto.
-- `Button Label`: el texto del botón, que siempre lleva a la página de contacto.
-- Si dejas el `Title` vacío, el bloque no se muestra.
+Para añadir un concierto: *Concert Schedule / Events* → **New**. Necesita
+título, fecha con hora y lugar.
 
-## Retrato de la biografía
+---
 
-La biografía puede abrir con una foto. Se edita en `/admin` -> `Pages (Biography, etc.)` -> `Biography` -> `Portrait`.
+## Clases
 
-- Funciona mejor una foto **apaisada**: se recorta a formato panorámico.
-- Si no subes ninguna, la página simplemente empieza por el texto.
+En **Pages → Lessons**. Dos campos:
 
-## Cómo mostrar u ocultar la agenda de conciertos
+- **Description** — uno o dos párrafos: qué enseñas, a quién, cómo funcionan.
+- **Key Points** — líneas cortas que salen como lista: estilos, niveles,
+  idiomas, presencial u online, precio o «a consultar».
 
-La agenda de conciertos **viene oculta**. Mientras esté oculta no aparece en el menú, ni en el pie, ni en la portada, aunque ya tengas conciertos cargados.
+---
 
-Para mostrarla:
+## Galerías
 
-1. Entra a `/admin`.
-2. Abre `Concert Schedule - List Page`.
-3. Activa `Show Concert Schedule`.
-4. Guarda o publica los cambios.
+### Imágenes
 
-Este interruptor es común a los tres idiomas: lo activas una vez y se aplica al alemán, al español y al inglés.
+Cada foto lleva título, descripción y **texto alternativo** (una frase que
+describe la imagen, para quien no puede verla). Se abren en grande al pulsarlas.
 
-Para volver a ocultarla, desactívalo. **No se borra nada**: los conciertos cargados siguen guardados y vuelven a aparecer cuando la actives de nuevo.
+### Videos
 
-Conviene activarla solo cuando haya fechas confirmadas, y volver a ocultarla si la agenda se queda sin próximos conciertos durante una temporada.
+Con el ID de YouTube basta. Si no pones portada, se usa la miniatura de YouTube.
 
-## La sección de Instagram
+### Audios
 
-La sección de Instagram se llena sola: una vez al día el sitio consulta la cuenta, **se descarga las fotos y las leyendas** y las publica. No hay que copiar ni pegar nada.
+Está **oculta**. Enciéndela cuando tengas material.
 
-Como las fotos quedan guardadas en el sitio, si un día Instagram falla o la conexión caduca, lo último que se sincronizó sigue publicado. La página no se rompe nunca.
+---
 
-### Qué se puede editar y qué no
+## Contacto
 
-Las publicaciones **no se editan a mano**. Si cambias una leyenda desde el panel, la siguiente sincronización la vuelve a pisar con la de Instagram. Lo que sí controlas está en `/admin` → `Instagram Feed`:
+En **Site Settings**, el campo **Booking Destination Email** es donde llegan los
+mensajes del formulario.
 
-- **Show Page in Submenu**: muestra u oculta la sección entera. Viene oculta.
-- **Title** y **Subtitle**: el titular de la página, en cada idioma.
-- **Posts to Show**: cuántas publicaciones se ven (hasta 12).
-- **Show Captions**: si se muestran las leyendas o solo las fotos.
-- **Caption Language**: el idioma en el que escribes en Instagram. Instagram da una sola leyenda por publicación, así que se muestra tal cual en las tres versiones del sitio; este campo sirve para que los lectores de pantalla la pronuncien bien.
-- **Per-post Exceptions**: para **ocultar una publicación concreta** o corregirle el texto alternativo. Necesitas el identificador de la publicación, que aparece en `data/instagram.json`.
+> Mientras esté vacío, **el formulario no aparece** y la página muestra un
+> aviso. Es lo primero que conviene rellenar.
 
-### Qué hace falta para activarla
+---
 
-Dos cosas que no dependen del sitio:
+## Aviso legal y privacidad
 
-1. Que la cuenta de Instagram sea **Creator o Business**. Es gratis, se cambia desde la propia aplicación y se puede volver atrás.
-2. Que el desarrollador conecte la cuenta una vez para autorizar el acceso.
+En **Pages**. El **Aviso legal (Impressum)** es obligatorio en Alemania y hoy
+está incompleto: faltan tu dirección postal y tu correo. Los huecos están
+marcados en el propio texto.
 
-Hasta entonces la sección queda oculta y con publicaciones de ejemplo.
+La página de **privacidad** explica qué hace la web con los datos de quien la
+visita. Está redactada según cómo está construido el sitio, pero conviene que la
+revise alguien que lleve lo legal antes de publicarla.
 
-### Una advertencia
+---
 
-La autorización de Instagram **caduca cada 60 días**. Está previsto que se renueve sola, pero si algún día la sección deja de actualizarse, ese suele ser el motivo: avisa al desarrollador.
+## Ocultar una sección
 
-## Configuración de Google Analytics 4
+Casi todas las secciones tienen un interruptor **Show Page in Menu** o **Show
+Page in Submenu**. Apagarlo quita la sección del menú, del pie y de la portada
+**sin borrar nada**. Al encenderlo vuelve tal cual estaba.
 
-La integración de GA4 quedó implementada en el tema para que, en usos futuros, solo haya que configurar el ID.
+---
 
-### Paso único de configuración
+## Antes de dar algo por publicado
 
-En [hugo.toml](hugo.toml), completa este valor:
-
-```toml
-[services]
-  [services.googleAnalytics]
-    id = "G-XXXXXXXXXX"
-```
-
-Si el `id` está vacío, GA4 no se carga y el banner de consentimiento no aparece.
-
-### Qué hace la integración
-
-- Carga GA4 solo en producción.
-- No activa analítica hasta que la persona acepte.
-- Mantiene `ad_storage` desactivado y solo habilita `analytics_storage` tras consentimiento.
-- No mide `/admin`.
-- Registra automáticamente `page_view` cuando hay consentimiento.
-- Registra eventos reutilizables como clics salientes y envío correcto del formulario de contacto.
-
-### Dónde quedó implementado
-
-- Partial principal de GA4: `themes/PaperMod/layouts/partials/google_analytics.html`
-- Banner y gestión de consentimiento: `themes/PaperMod/layouts/partials/footer.html`
-- Estilos del banner: `themes/PaperMod/assets/css/extended/analytics-consent.css`
-
-### Verificación recomendada
-
-1. Configura el `id` de GA4.
-2. Levanta el sitio en producción o revisa el despliegue de GitHub Pages.
-3. Acepta la analítica en el banner.
-4. Revisa `DebugView` en GA4.
-5. Confirma que aparecen `page_view`, `outbound_click` y `contact_form_submit_success`.
+- Míralo en el móvil, no solo en el ordenador.
+- Comprueba que las fotos nuevas no salen recortadas por donde no toca.
+- Si cambiaste textos, revisa que los tres idiomas estén al día.
+- Espera un par de minutos: la web tarda un poco en actualizarse.

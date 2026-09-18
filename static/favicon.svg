@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Monograma AR. El color de fondo es un marcador: lo fija la direccion visual
+  que se elija (fase 3), y tiene que coincidir con theme_color de hugo.toml.
+    A Pico     #e0402a      C Marcador #ffd400 con letras #0e0e0e
+    B Andes    #1f6b4a      D Neon     #2f5cff
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Andrés Romero">
+  <rect width="64" height="64" rx="12" fill="#e0402a"/>
+  <text x="32" y="43"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="30" font-weight="700" letter-spacing="-1.5"
+        text-anchor="middle" fill="#ffffff">AR</text>
+</svg>

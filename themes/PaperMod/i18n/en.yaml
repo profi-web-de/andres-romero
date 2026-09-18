@@ -166,17 +166,9 @@
 - id: contact_form_error
   translation: "The message could not be sent. Please try again."
 
-- id: teaching_germany_chair
-  translation: "Chair in Germany"
 
-- id: teaching_peru_chair
-  translation: "Chair in Peru"
 
-- id: teaching_masterclasses
-  translation: "Masterclasses"
 
-- id: teaching_resources
-  translation: "Student Resources"
 
 - id: teaching_admissions
   translation: "Admission"
@@ -190,8 +182,6 @@
 - id: teaching_calendar
   translation: "Calendar"
 
-- id: teaching_private_area
-  translation: "Private area"
 
 - id: teaching_institution_website
   translation: "Visit institution"
@@ -246,3 +236,12 @@
 
 - id: instagram_empty
   translation: "No posts have been synced yet."
+
+- id: projects_empty
+  translation: "No projects published yet."
+
+- id: projects_more
+  translation: "Find out more"
+
+- id: imprint_page_link
+  translation: "Legal notice"

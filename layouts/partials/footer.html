@@ -3,6 +3,13 @@
 {{- $privacyPage = site.GetPage "privacy" -}}
 {{- end -}}
 
+{{- /* Impressum: obligatorio en Alemania. Se enlaza igual que la privacidad y,
+       si la pagina no existe, el enlace simplemente no se pinta. */ -}}
+{{- $imprintPage := site.GetPage "/impressum" -}}
+{{- if not $imprintPage -}}
+{{- $imprintPage = site.GetPage "impressum" -}}
+{{- end -}}
+
 {{- $currentPage := . -}}
 {{- $siteSettings := hugo.Data.site_settings -}}
 {{- $socialLinks := dict
@@ -102,7 +109,7 @@
             </ul>
         </nav>
         <div class="footer-meta">
-            <span>&copy; {{ $copyrightName }} {{ now.Year }}{{ with $developer }} · {{ i18n "developed_by" }} <a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }}</a>{{ end }}{{ with $privacyPage }} · <a href="{{ .RelPermalink }}">{{ i18n "privacy_page_link" | default "Privacy" }}</a>{{ end }}</span>
+            <span>&copy; {{ $copyrightName }} {{ now.Year }}{{ with $developer }} · {{ i18n "developed_by" }} <a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }}</a>{{ end }}{{ with $imprintPage }} · <a href="{{ .RelPermalink }}">{{ i18n "imprint_page_link" | default "Imprint" }}</a>{{ end }}{{ with $privacyPage }} · <a href="{{ .RelPermalink }}">{{ i18n "privacy_page_link" | default "Privacy" }}</a>{{ end }}</span>
         </div>
     </div>
 </footer>

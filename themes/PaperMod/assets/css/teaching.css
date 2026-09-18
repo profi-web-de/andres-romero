@@ -1,6 +1,6 @@
 /* Docencia: tipografia editorial, no fichas.
    La version anterior pintaba cada catedra como una tarjeta con sombra,
-   gradiente y botones en pildora. Al lado de Biografia, Violinista y Director
+   gradiente y botones en pildora. Al lado de Biografia y Proyectos
    --que son prosa sobre fondo limpio-- parecia otra web. Aqui solo hay
    jerarquia tipografica y filetes: los datos siguen viniendo de campos
    estructurados del CMS, pero se leen como un articulo. */
@@ -124,4 +124,32 @@
    debajo del titular; sin este respiro quedaba pegado al h2. */
 .post-content .teaching-block > h2 + p {
   margin-top: 0.7rem;
+}
+
+/* Lista de puntos de las clases: estilos, niveles, idiomas, modalidad. Sin
+   bolitas de lista; cada punto lleva un filete del color de acento, que es el
+   unico sitio donde el acento aparece en esta pagina. */
+.post-content .teaching-points {
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.post-content .teaching-points li {
+  margin: 0;
+  padding-left: 1.1rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.post-content .teaching-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.5rem;
+  height: 2px;
+  background: var(--accent, var(--secondary));
 }

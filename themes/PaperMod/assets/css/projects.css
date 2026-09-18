@@ -1,0 +1,107 @@
+/* Proyectos: las bandas del músico.
+
+   La rejilla es la misma familia visual que las galerías (sin marco de
+   tarjeta, manda la foto), pero con más aire entre filas: aquí cada ficha
+   lleva texto que hay que leer, no solo mirar. */
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2.75rem 1.75rem;
+  margin-top: 2.5rem;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  margin: 0;
+}
+
+.project-card__media {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.project-card__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  /* aspect-ratio se ignora en silencio si no se anula la altura que
+     responsive-image.html emite como atributo HTML. */
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.project-card--linked:hover .project-card__media img,
+.project-card--linked:focus-within .project-card__media img {
+  transform: scale(1.04);
+}
+
+.project-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.project-card__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: var(--primary);
+}
+
+.project-card__title a {
+  color: inherit;
+  text-decoration: none;
+  box-shadow: none;
+}
+
+/* El área de pulsación cubre la tarjeta entera, foto incluida, sin anidar un
+   enlace dentro de otro. */
+.project-card--linked {
+  position: relative;
+}
+
+.project-card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.project-card__title a:hover,
+.project-card__title a:focus-visible {
+  color: var(--accent, var(--primary));
+}
+
+.project-card__text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--secondary);
+}
+
+.project-card__more {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent, var(--secondary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card__media img { transition: none; }
+}
+
+/* Los nombres de las bandas van en mayusculas, como los rotulos de cartel. */
+.project-card__title {
+  text-transform: uppercase;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+}

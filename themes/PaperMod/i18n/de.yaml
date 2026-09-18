@@ -104,17 +104,9 @@
 - id: contact_form_error
   translation: "Die Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
 
-- id: teaching_germany_chair
-  translation: "Professur in Deutschland"
 
-- id: teaching_peru_chair
-  translation: "Professur in Peru"
 
-- id: teaching_masterclasses
-  translation: "Meisterkurse"
 
-- id: teaching_resources
-  translation: "Ressourcen für Studierende"
 
 - id: teaching_admissions
   translation: "Bewerbung"
@@ -128,8 +120,6 @@
 - id: teaching_calendar
   translation: "Kalender"
 
-- id: teaching_private_area
-  translation: "Privater Bereich"
 
 - id: teaching_institution_website
   translation: "Institution besuchen"
@@ -243,3 +233,12 @@
 
 - id: instagram_empty
   translation: "Es wurden noch keine Beiträge synchronisiert."
+
+- id: projects_empty
+  translation: "Noch keine Projekte veröffentlicht."
+
+- id: projects_more
+  translation: "Mehr erfahren"
+
+- id: imprint_page_link
+  translation: "Impressum"
