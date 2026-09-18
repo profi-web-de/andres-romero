@@ -73,22 +73,23 @@
                                    como marca de agua. Es decorativa, asi que va aria-hidden;
                                    quien no la ve se entera por aria-current y por el title. */ -}}
                             <span class="lang-switch__current" aria-current="true" title="{{ .Language.LanguageName | default (.Lang | title) }}">
-                                <svg class="lang-guitar" viewBox="0 0 76 28" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+                                <svg class="lang-guitar" viewBox="0 0 44 52" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
                                     <mask id="lang-guitar-soundhole">
-                                        <rect width="76" height="28" fill="#fff"></rect>
-                                        <circle cx="31" cy="14" r="2.2" fill="#000"></circle>
+                                        <rect width="44" height="52" fill="#fff"></rect>
+                                        <circle cx="22" cy="29.6" r="3.2" fill="#000"></circle>
                                     </mask>
                                     <g fill="currentColor" mask="url(#lang-guitar-soundhole)">
-                                        <!-- Proporciones: el bombo inferior manda, el superior es
-                                             claramente menor, y entre los dos hay una cintura
-                                             estrecha. Cuerpo y mastil ocupan mas o menos la mitad
-                                             cada uno; con el mastil corto la silueta se leia como
-                                             una llave. -->
-                                        <ellipse cx="12" cy="14" rx="11.5" ry="11.5"></ellipse>
-                                        <rect x="20.5" y="10.5" width="8" height="7" rx="2.5"></rect>
-                                        <ellipse cx="31" cy="14" rx="7.5" ry="8.5"></ellipse>
-                                        <rect x="38" y="12.6" width="27" height="2.8" rx="1"></rect>
-                                        <rect x="64" y="9.8" width="11" height="8.4" rx="2.6"></rect>
+                                        <!-- De pie y no tumbada: detras de dos mayusculas cabe una
+                                             silueta alta y estrecha, no una alargada. Manda el
+                                             cuerpo -bombo grande abajo, bombo menor arriba, cintura
+                                             entre los dos-; del mastil solo se ve el arranque, que
+                                             es lo que hace falta para reconocerla a este tamano. -->
+                                        <rect x="16.5" y="0" width="11" height="4.6" rx="1.8"></rect>
+                                        <rect x="19.5" y="3" width="5" height="17" rx="1.2"></rect>
+                                        <ellipse cx="22" cy="20" rx="9.5" ry="8.4"></ellipse>
+                                        <rect x="15.4" y="18" width="13.2" height="19" rx="5"></rect>
+                                        <ellipse cx="22" cy="36.5" rx="14" ry="13"></ellipse>
+                                        <rect x="16" y="41" width="12" height="2.4" rx="1.2"></rect>
                                     </g>
                                 </svg>
                                 <span class="lang-switch__code">{{ .Lang | upper }}</span>

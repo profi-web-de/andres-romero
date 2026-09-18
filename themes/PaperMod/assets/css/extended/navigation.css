@@ -344,7 +344,8 @@
         transition: none;
     }
 }
-/* Selector de idioma: los códigos visibles y el activo marcado. */
+/* Selector de idioma: los dos códigos visibles, el activo marcado y una
+   separación real respecto al interruptor de tema. */
 .lang-switch {
   display: flex;
   align-items: center;
@@ -389,11 +390,11 @@
 /* --- Guitarra del selector de idioma -------------------------------------
    El idioma activo lleva una guitarra detras del codigo, como marca de agua.
 
-   Va en diagonal por una razon concreta: la guitarra es una silueta muy
-   alargada (76 x 28) y la caja de dos mayusculas es casi cuadrada. Metida en
-   horizontal, o se encoge hasta ser una mancha con un palo, o el mastil sale
-   disparado hasta chocar con el idioma siguiente. Girada, ocupa la caja de
-   esquina a esquina y ademas recuerda al cartel.
+   Va de pie: la caja de dos mayusculas es alta y estrecha, y una guitarra
+   tumbada ahi dentro o se encoge hasta ser una mancha con un palo, o el
+   mastil sale disparado hasta chocar con el idioma siguiente. De pie, el
+   cuerpo queda justo detras de las letras y del mastil solo asoma el
+   arranque. Un giro corto para que no parezca un sello de imprenta.
 
    Opacidad baja: se reconoce, y las dos mayusculas encima se leen sin
    esfuerzo. El agujero de la boca se recorta con una mascara y no pintandolo
@@ -403,19 +404,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.2rem 0.62rem;
+  padding: 0.2rem 0.34rem;
 }
 
 .lang-guitar {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2.25rem;
-  height: auto;
+  height: 2.05rem;
+  width: auto;
   color: var(--accent);
-  opacity: 0.2;
+  opacity: 0.15;
   pointer-events: none;
-  transform: translate(-50%, -50%) rotate(-30deg);
+  /* El centro visual de la guitarra no es el centro del dibujo: el cuerpo
+     esta al 65% de la altura. Giramos y centramos sobre ese punto para que
+     la mancha caiga detras de las letras y no al lado. */
+  transform-origin: 50% 65%;
+  transform: translate(-50%, -65%) rotate(-11deg);
 }
 
 .lang-switch__code {
