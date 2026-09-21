@@ -72,8 +72,7 @@ buildFuture = true
     name = 'Pablo Johnson'
     url = 'https://github.com/pablo-johnson'
   [params.seo]
-    # Completar con los perfiles en redes sociales del artista:
-    # same_as = ["https://www.instagram.com/...", "https://www.youtube.com/@..."]
+    same_as = ["https://www.instagram.com/pipe466/", "https://www.youtube.com/@AndresRomeroG", "https://www.facebook.com/AndresRomeroEG"]
     job_title = 'Gitarrist, Komponist und Musikpädagoge'
     genre     = 'Klassische Musik'
 
