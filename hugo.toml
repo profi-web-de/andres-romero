@@ -58,6 +58,7 @@ buildFuture = true
   ShowShareButtons = false
   ShowReadingTime = false
   images = ['og-default.jpg']
+  author = 'Andrés Romero'
   [params.assets]
     favicon = 'favicon.svg'
     # Bermellón de la dirección Picó. El mismo valor va en static/favicon.svg
@@ -70,6 +71,11 @@ buildFuture = true
   [params.developer]
     name = 'Pablo Johnson'
     url = 'https://github.com/pablo-johnson'
+  [params.seo]
+    # Completar con los perfiles en redes sociales del artista:
+    # same_as = ["https://www.instagram.com/...", "https://www.youtube.com/@..."]
+    job_title = 'Gitarrist, Komponist und Musikpädagoge'
+    genre     = 'Klassische Musik'
 
 # --- MENUS ---
 [languages.de.menu]

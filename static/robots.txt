@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://profi-web-de.github.io/andres-romero/sitemap.xml
