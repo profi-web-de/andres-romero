@@ -17,12 +17,9 @@ buildFuture = true
   [cascade.target]
     path = '{/home,/home/**}'
 
-# Google Analytics 4 — pendiente: hace falta crear una propiedad nueva para este
-# sitio. Sin 'id' no se carga GA4 ni aparece el banner de consentimiento, que es
-# justo lo que queremos hasta tenerlo.
-# [services]
-#   [services.googleAnalytics]
-#     id = 'G-XXXXXXXXXX'
+[services]
+  [services.googleAnalytics]
+    id = 'G-55PJHKCXHQ'
 
 [languages]
   [languages.de]
