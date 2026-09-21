@@ -209,3 +209,7 @@ buildFuture = true
     name = "Contact"
     url = "contact/"
     weight = 6
+
+[module]
+  [[module.imports]]
+    path = "github.com/profi-web-de/profi-web"
